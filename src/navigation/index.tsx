@@ -11,7 +11,7 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Home">
+      <Stack.Navigator initialRouteName="Signup">
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="Signup" component={SignupScreen} />
       </Stack.Navigator>
