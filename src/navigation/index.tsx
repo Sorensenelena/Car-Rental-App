@@ -4,6 +4,7 @@ import { registerRootComponent } from 'expo';
 import { StyleSheet, View } from 'react-native';
 
 import HomeScreen from '../../screens/Home';
+import ProfileScreen from '../../screens/Profile';
 import SearchResultsScreen from '../../screens/Search_results';
 import { RootStackParamList } from '../../types';
 
@@ -28,6 +29,7 @@ function App() {
           component={SearchResultsScreen}
           options={{ headerShown: false }}
         />
+        <Stack.Screen name="Profile" component={ProfileScreen}/>
       </Stack.Navigator>
     </NavigationContainer>
   );
