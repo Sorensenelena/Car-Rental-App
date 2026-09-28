@@ -10,25 +10,25 @@ type ProfileButtonProps = {
 
 export default function ProfileButton({name, link}: ProfileButtonProps) {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-  return ( 
-    <Pressable 
-        onPress={() => {}}
-        style={styles.button}>
-        <Text>{name}</Text>
-    </Pressable>
+  return (
+        <Pressable 
+            onPress={() => {}}
+            style={styles.button}>
+            <Text>{name}</Text>
+        </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
     button: {
-        backgroundColor: 'dimgrey',
+        backgroundColor: 'lightgrey',
         borderRadius: 10,
         padding: 10,
         margin: 5,
         minHeight: 50,
         justifyContent: 'center',
         alignItems: 'center',
+
         alignSelf: 'stretch'
-        
     },
 });

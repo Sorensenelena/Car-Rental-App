@@ -9,21 +9,28 @@ export default function ProfileScreen() {
 
   return (
     <View style={styles.container}>
-      <Image style={styles.logo} source={require('@/assets/images/logoipsum-logo-icon.png')} />
-        <View style={styles.profileLogoAndInfo}>
-          <Image source={require('@/assets/images/profile-icon.png')} />
-          <View style={styles.profileInfo}>
-            <Text style={styles.text}>Name</Text>
-            <Text style={styles.text}>More Info</Text>
+      <View style={styles.main}>
+        <Image style={styles.logo} source={require('@/assets/images/logoipsum-logo-icon.png')} />
+          <View style={styles.profileLogoAndInfo}>
+            <Image source={require('@/assets/images/profile-icon.png')} />
+            <View style={styles.profileInfo}>
+              <Text style={styles.text}>Name</Text>
+              <Text style={styles.text}>More Info</Text>
+            </View>
           </View>
+        <View>
+          <ProfileButton name='Drivers license' link=''/>
+          <ProfileButton name='Current rentals' link=''/>
+          <ProfileButton name='Previous rentals' link=''/>
         </View>
-      <View>
-        <ProfileButton name='Drivers license' link=''/>
-        <ProfileButton name='Current rentals' link=''/>
-        <ProfileButton name='Previous rentals' link=''/>
       </View>
       <View style={styles.bottomMenu}>
-
+        <View>
+          <Image source={require('@/assets/images/arrow-left-square.png')} />
+        </View>
+        <View>
+           <Image style={{width: 60, height: 60}} source={require('@/assets/images/profile-icon.png')} />
+        </View>
       </View>
     </View>
   );
@@ -33,8 +40,11 @@ export default function ProfileScreen() {
 const styles = StyleSheet.create({
   container: { 
     flex: 1,
-    alignItems: 'center'
-    },                  
+    },           
+  main: { 
+    alignItems: 'center',
+    flex: 5
+    },       
   logo: {
     alignSelf: 'flex-start',
     margin: 10,
@@ -44,7 +54,6 @@ const styles = StyleSheet.create({
   },
   profileInfo: {
     flexDirection: 'column'
-    
   },
   profileLogoAndInfo: {
     flexDirection: 'row',
@@ -52,8 +61,11 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
   },
   bottomMenu:{
-    alignSelf: 'flex-end',
-    backgroundColor: 'dimgrey',
-    
+    flexDirection: 'row',
+    backgroundColor: 'lightgrey',
+    flex: 1,
+    justifyContent: 'space-between',
+    alignItems: 'center'
+
   },
 }); 
