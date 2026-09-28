@@ -1,7 +1,7 @@
 import ProfileButton from '@/components/Profile-button';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { Image, StyleSheet, Text, View } from 'react-native';
+import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import { RootStackParamList } from '../types';
 
 export default function ProfileScreen() {
@@ -26,7 +26,10 @@ export default function ProfileScreen() {
       </View>
       <View style={styles.bottomMenu}>
         <View>
-          <Image source={require('@/assets/images/arrow-left-square.png')} />
+          <Pressable
+          onPress={() => navigation.navigate('Home')}>
+            <Image source={require('@/assets/images/arrow-left-square.png')} />
+          </Pressable>
         </View>
         <View>
            <Image style={{width: 60, height: 60}} source={require('@/assets/images/profile-icon.png')} />
