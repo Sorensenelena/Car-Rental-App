@@ -1,34 +1,57 @@
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useState } from 'react';
-import { StyleSheet, TextInput, View } from 'react-native';
+import { Image, StyleSheet, Text, View } from 'react-native';
 import { RootStackParamList } from '../types';
 
-export default function HomeScreen() {
+export default function ProfileScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [text, setText] = useState('');
 
   return (
-    <View style={styles.card}>
-      <TextInput
-        value={text}
-        onChangeText={setText}
-        placeholder="Location..."
+    <View style={styles.container}>
+      <Image style={styles.logo} source={require('@/assets/images/logoipsum-logo-icon.png')} />
+            <View style={styles.profileLogoAndInfo}>
+              <Image source={require('@/assets/images/profile-icon.png')} />
+              <View style={styles.profileInfo}>
+                <Text style={styles.text}>Name</Text>
+                <Text style={styles.text}>More Info</Text>
+              </View>
+            </View>
+      <View>
 
-      />
+      </View>
+      <View>
+
+      </View>
     </View>
   );
 }
 
+
+
 const styles = StyleSheet.create({
-        container: { 
-            flex: 1, alignItems: 'center', justifyContent: 'center'
-    },                         
-        card: {
-        flexDirection: 'row',
-        backgroundColor: 'grey',
-        borderRadius: 16,
-        padding: 10,
-        alignItems: 'center',    
-    },  
+  container: { 
+    flex: 1,
+    alignItems: 'center'
+    },                  
+  logo: {
+    alignSelf: 'flex-start',
+    margin: 10,
+  },
+  text: {
+      margin: 5
+  },
+  profileInfo: {
+    flexDirection: 'column'
+    
+  },
+  profileLogoAndInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignSelf: 'flex-start',
+  },
+  button:{
+
+  },
 }); 
