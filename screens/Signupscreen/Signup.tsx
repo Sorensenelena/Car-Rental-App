@@ -1,7 +1,7 @@
 import { View, Text, Pressable, StyleSheet, TextInput } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from './types';
+import { RootStackParamList } from '../../types';
 import { useLayoutEffect, useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { Picker } from '@react-native-picker/picker';
