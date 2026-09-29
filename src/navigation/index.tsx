@@ -4,7 +4,7 @@ import { registerRootComponent } from 'expo';
 import { StyleSheet, View } from 'react-native';
 
 import HomeScreen from '../../screens/Home';
-import SignupScreen from '../../screens/Signup';
+import SignupScreen from '../../screens/Signupscreen/Signup';
 import ProfileScreen from '../../screens/Profile';
 import SearchResultsScreen from '../../screens/Search_results';
 import { RootStackParamList } from '../../types';
