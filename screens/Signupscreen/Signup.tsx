@@ -1,10 +1,11 @@
 import { View, Text, Pressable, StyleSheet, TextInput } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../types';
+import { RootStackParamList } from './types';
 import { useLayoutEffect, useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { Picker } from '@react-native-picker/picker';
+import FormField from './components/formfield';
 
 const MONTHS = [
   'January',
@@ -107,22 +108,22 @@ export default function SignUpScreen() {
             </View>
 
             <View style={styles.dayField}>
-              <Text style={styles.label}>Day</Text>
-              <TextInput
-                style={styles.smallInput}
+              <FormField
+                label="Day"
                 value={birthDay}
                 onChangeText={setBirthDay}
                 keyboardType="numeric"
+                small
               />
             </View>
 
             <View style={styles.yearField}>
-              <Text style={styles.label}>Year</Text>
-              <TextInput
-                style={styles.smallInput}
+              <FormField
+                label="Year"
                 value={birthYear}
                 onChangeText={setBirthYear}
                 keyboardType="numeric"
+                small
               />
             </View>
           </View>
@@ -130,39 +131,41 @@ export default function SignUpScreen() {
           {dateHasLetters && (
             <Text style={styles.errorText}>Day and year must be numbers only</Text>
           )}
-
-          <View>
-            <Text style={styles.label}>Username</Text>
-            <TextInput style={styles.input} value={username} onChangeText={setUsername} />
-          </View>
+          <FormField
+            label="Username"
+            value={username}
+            onChangeText={setUsername}
+            autoCapitalize="none"
+          />
 
           <View>
             <Text style={styles.label}>Email</Text>
             <TextInput style={styles.input} value={email} onChangeText={setEmail} />
           </View>
 
-          <View>
-            <Text style={styles.label}>Password</Text>
-            <TextInput
-              style={styles.input}
-              value={password}
-              onChangeText={setPassword}
-              secureTextEntry
-            />
-          </View>
+          <FormField
+            label="Email"
+            value={email}
+            onChangeText={setEmail}
+            autoCapitalize="none"
+          />
 
-          <View>
-            <Text style={styles.label}>Confirm password</Text>
-            <TextInput
-              style={styles.input}
-              value={ConfirmPassword}
-              onChangeText={setConfirmPassword}
-              secureTextEntry
-            />
-            {passwordsMismatch && (
-              <Text style={styles.errorText}>Passwords do not match</Text>
-            )}
-          </View>
+          <FormField
+            label="Password"
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry
+            autoCapitalize="none"
+          />
+
+          <FormField
+            label="Confirm password"
+            value={ConfirmPassword}
+            onChangeText={setConfirmPassword}
+            secureTextEntry
+            error={passwordsMismatch ? 'Passwords do not match' : undefined}
+            autoCapitalize="none"
+          />
 
           <Pressable onPress={handleSignup} style={styles.button}>
             <Text style={styles.buttonText}>Sign up</Text>
