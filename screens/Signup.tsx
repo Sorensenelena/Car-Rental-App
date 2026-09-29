@@ -6,6 +6,21 @@ import { useLayoutEffect, useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { Picker } from '@react-native-picker/picker';
 
+const MONTHS = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
+];
+
 export default function SignUpScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
@@ -18,6 +33,11 @@ export default function SignUpScreen() {
   const [birthMonth, setBirthMonth] = useState('');
   const [birthDay, setBirthDay] = useState('');
   const [birthYear, setBirthYear] = useState('');
+
+  const passwordsMismatch = ConfirmPassword.length > 0 && password !== ConfirmPassword;
+  const dayHasLetters = birthDay.length > 0 && !/^\d+$/.test(birthDay);
+  const yearHasLetters = birthYear.length > 0 && !/^\d+$/.test(birthYear);
+  const dateHasLetters = dayHasLetters || yearHasLetters;
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -32,28 +52,30 @@ export default function SignUpScreen() {
   }, [navigation]);
 
   const handleSignup = () => {
-  console.log('firstName:', firstName);
-  console.log('lastName:', lastName);
-  console.log('birthMonth:', birthMonth);
-  console.log('birthDay:', birthDay);
-  console.log('birthYear:', birthYear);
-  console.log('username:', username);
-  console.log('email:', email);
-  console.log('password:', password);
-  console.log('ConfirmPassword:', ConfirmPassword);
-};
+    if (password !== ConfirmPassword || dateHasLetters) {
+      return;
+    }
+
+    console.log('firstName:', firstName);
+    console.log('lastName:', lastName);
+    console.log('birthMonth:', birthMonth);
+    console.log('birthDay:', birthDay);
+    console.log('birthYear:', birthYear);
+    console.log('username:', username);
+    console.log('email:', email);
+    console.log('password:', password);
+    console.log('ConfirmPassword:', ConfirmPassword);
+  };
 
   return (
     <View style={styles.screen}>
-
       <View style={styles.container}>
         <View style={styles.form}>
-
-          <View style={styles.nameRow}>
+          <View style={styles.row}>
             <View style={styles.nameFieldContainer}>
               <Text style={styles.label}>First Name</Text>
               <TextInput
-                style={styles.nameField}
+                style={styles.smallInput}
                 value={firstName}
                 onChangeText={setFirstName}
               />
@@ -62,14 +84,14 @@ export default function SignUpScreen() {
             <View style={styles.nameFieldContainer}>
               <Text style={styles.label}>Last Name</Text>
               <TextInput
-                style={styles.nameField}
+                style={styles.smallInput}
                 value={lastName}
                 onChangeText={setLastName}
               />
             </View>
           </View>
 
-          <View style={styles.nameRow}>
+          <View style={styles.row}>
             <View style={styles.monthField}>
               <Text style={styles.label}>Month</Text>
               <Picker
@@ -78,25 +100,16 @@ export default function SignUpScreen() {
                 style={styles.monthPicker}
               >
                 <Picker.Item label="Select month" value="" />
-                <Picker.Item label="January" value="January" />
-                <Picker.Item label="February" value="February" />
-                <Picker.Item label="March" value="March" />
-                <Picker.Item label="April" value="April" />
-                <Picker.Item label="May" value="May" />
-                <Picker.Item label="June" value="June" />
-                <Picker.Item label="July" value="July" />
-                <Picker.Item label="August" value="August" />
-                <Picker.Item label="September" value="September" />
-                <Picker.Item label="October" value="October" />
-                <Picker.Item label="November" value="November" />
-                <Picker.Item label="December" value="December" />
+                {MONTHS.map((month) => (
+                  <Picker.Item key={month} label={month} value={month} />
+                ))}
               </Picker>
             </View>
 
             <View style={styles.dayField}>
               <Text style={styles.label}>Day</Text>
               <TextInput
-                style={styles.dateInput}
+                style={styles.smallInput}
                 value={birthDay}
                 onChangeText={setBirthDay}
                 keyboardType="numeric"
@@ -106,7 +119,7 @@ export default function SignUpScreen() {
             <View style={styles.yearField}>
               <Text style={styles.label}>Year</Text>
               <TextInput
-                style={styles.dateInput}
+                style={styles.smallInput}
                 value={birthYear}
                 onChangeText={setBirthYear}
                 keyboardType="numeric"
@@ -114,22 +127,18 @@ export default function SignUpScreen() {
             </View>
           </View>
 
+          {dateHasLetters && (
+            <Text style={styles.errorText}>Day and year must be numbers only</Text>
+          )}
+
           <View>
             <Text style={styles.label}>Username</Text>
-            <TextInput
-              style={styles.input}
-              value={username}
-              onChangeText={setUsername}
-            />
+            <TextInput style={styles.input} value={username} onChangeText={setUsername} />
           </View>
 
           <View>
             <Text style={styles.label}>Email</Text>
-            <TextInput
-              style={styles.input}
-              value={email}
-              onChangeText={setEmail}
-            />
+            <TextInput style={styles.input} value={email} onChangeText={setEmail} />
           </View>
 
           <View>
@@ -141,14 +150,18 @@ export default function SignUpScreen() {
               secureTextEntry
             />
           </View>
+
           <View>
-            <Text style={styles.label}> Confirm password</Text>
+            <Text style={styles.label}>Confirm password</Text>
             <TextInput
               style={styles.input}
               value={ConfirmPassword}
               onChangeText={setConfirmPassword}
               secureTextEntry
             />
+            {passwordsMismatch && (
+              <Text style={styles.errorText}>Passwords do not match</Text>
+            )}
           </View>
 
           <Pressable onPress={handleSignup} style={styles.button}>
@@ -158,93 +171,47 @@ export default function SignUpScreen() {
       </View>
 
       <View style={styles.loginRow}>
-  <Text style={styles.loginText}>already have an account?</Text>
-  <Pressable onPress={() => navigation.navigate('Login')}>
-    <Text>Login</Text>
-  </Pressable>
-</View>
+        <Text style={styles.loginText}>already have an account?</Text>
+        <Pressable onPress={() => navigation.navigate('Login')}>
+          <Text>Login</Text>
+        </Pressable>
+      </View>
     </View>
   );
 }
+
+const inputBase = {
+  color: 'white',
+  backgroundColor: 'grey',
+  borderRadius: 10,
+  padding: 5,
+} as const;
 
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
   },
-
-  headerButton: {
-    paddingHorizontal: 5,
-  },
-
-  headerButtonText: {
-    fontSize: 16,
-    color: 'green',
-  },
-
-  bottomBar: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    paddingVertical: 12,
-    backgroundColor: 'grey',
-    borderTopWidth: 1,
-    borderTopColor: '#ddd',
-  },
-
-  bottomBarText: {
-    fontSize: 16,
-    color: 'black',
-  },
-
   container: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'flex-start',
     paddingTop: 20,
   },
-
-  label: {
-    marginBottom: 5,
+  form: {
+    width: '80%',
+  },
+  headerButton: {
+    paddingHorizontal: 5,
   },
 
-  input: {
-    color: 'white',
-    backgroundColor: 'grey',
-    borderRadius: 10,
-    padding: 5,
-    marginBottom: 5,
-    marginTop: 3,
-  },
-
-  nameRow: {
-    color: 'white',
+  row: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 10,
   },
-
-  button: {
-    alignSelf: 'center',
-    backgroundColor: 'grey',
-    paddingVertical: 8,
-    paddingHorizontal: 25,
-    borderRadius: 14,
-    marginTop: 20,
-  },
-
-  buttonText: {
-    color: 'white',
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-
-  form: {
-    width: '80%',
-  },
-
   nameFieldContainer: {
     width: '48%',
   },
-
   monthField: {
     width: '46%',
   },
@@ -255,37 +222,53 @@ const styles = StyleSheet.create({
     width: '26%',
   },
 
-  nameField: {
-    color: 'white',
-    borderRadius: 10,
-    backgroundColor: 'grey',
+  label: {
+    marginBottom: 5,
+  },
+  input: {
+    ...inputBase,
+    marginBottom: 5,
+    marginTop: 3,
+  },
+  smallInput: {
+    ...inputBase,
     width: '100%',
     height: 35,
-    padding: 5,
-    marginTop: 5,
   },
-
-  dateInput: {
-    color: 'white',
-    borderRadius: 10,
-    backgroundColor: 'grey',
-    width: '100%',
-    height: 35,
-    padding: 5,
-  },
-
   monthPicker: {
     backgroundColor: 'grey',
     width: '100%',
     height: 35,
   },
 
+  button: {
+    alignSelf: 'center',
+    backgroundColor: 'grey',
+    paddingVertical: 8,
+    paddingHorizontal: 25,
+    borderRadius: 14,
+    marginTop: 20,
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+
   loginRow: {
-  position: 'absolute',
-  top: 500,      
-  right: 20,     
-  flexDirection: 'row',
-  alignItems: 'center',
-  gap: 5,       
-},
+    position: 'absolute',
+    top: 500,
+    right: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+  },
+  loginText: {
+    fontSize: 14,
+  },
+  errorText: {
+    color: 'red',
+    fontSize: 12,
+    marginTop: 2,
+  },
 });
