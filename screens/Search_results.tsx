@@ -2,9 +2,10 @@ import { FlatList, Pressable, StyleSheet, Text, TextInput, View } from 'react-na
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../types';
+import { RootStackParamList, Car } from '../types';
+import carsData from '../src/data/cars.json';
 
-const cars = Array.from({ length: 10 }, (_, i) => ({ id: String(i) }));
+const cars: Car[] = carsData;
 
 export default function SearchResultsScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
@@ -27,16 +28,18 @@ export default function SearchResultsScreen() {
       <FlatList
         style={styles.list}
         data={cars}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => String(item.id)}
         contentContainerStyle={{ gap: 10 }}
-        renderItem={() => (
-          <View style={styles.card}>
+        ListEmptyComponent={<Text>No cars found</Text>}
+        renderItem={({item}) => (
+          <View style={[styles.card, !item.isAvailable && styles.unavailable]}>
             <View style={styles.image} />
-            <View>
-              <Text style={styles.title}>Car title</Text>
-              <Text>Short car details</Text>
-              <Text>$$$</Text>
+            <View style={{ flex: 1 }}>
+              <Text style={styles.title}>{item.make} {item.model}</Text>
+              <Text>{item.year} · {item.color}</Text>
+              {!item.isAvailable && <Text>Unavailable</Text>}
             </View>
+            <Text style={styles.price}>{item.pricePerDay} kr</Text>
           </View>
         )}
       />
@@ -70,11 +73,14 @@ const styles = StyleSheet.create({
   list: { flex: 1, paddingHorizontal: 10 },
   card: {
     flexDirection: 'row',
+    alignItems: 'center',
     gap: 12,
     padding: 10,
     backgroundColor: '#B0B0B0',
     borderRadius: 10,
   },
+  price: { fontSize: 20, fontWeight: 'bold' },
+  unavailable: { opacity: 0.4 },
   image: { width: 60, height: 60, backgroundColor: '#D3D3D3' },
   title: { fontWeight: 'bold', fontSize: 16 },
   bottomBar: {
