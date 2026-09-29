@@ -13,7 +13,7 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Home">
+      <Stack.Navigator initialRouteName="Profile">
         <Stack.Screen
           name="Home"
           component={HomeScreen}
@@ -29,7 +29,10 @@ function App() {
           component={SearchResultsScreen}
           options={{ headerShown: false }}
         />
-        <Stack.Screen name="Profile" component={ProfileScreen}/>
+        <Stack.Screen 
+        name="Profile" 
+        component={ProfileScreen}
+        options={{ headerShown: false}}/>
       </Stack.Navigator>
     </NavigationContainer>
   );
