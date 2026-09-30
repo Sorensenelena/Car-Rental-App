@@ -7,6 +7,7 @@ import HomeScreen from '../../screens/Home';
 import SignupScreen from '../../screens/Signupscreen/Signup';
 import ProfileScreen from '../../screens/Profile';
 import SearchResultsScreen from '../../screens/Search_results';
+import BookingDetailsScreen from '../../screens/Booking_details';
 import { RootStackParamList } from '../../types';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -14,7 +15,7 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Home">
+      <Stack.Navigator initialRouteName="Booking_details">
         <Stack.Screen name="Signup" component={SignupScreen} />
         <Stack.Screen
           name="Home"
@@ -31,6 +32,12 @@ function App() {
           component={SearchResultsScreen}
           options={{ headerShown: false }}
         />
+        <Stack.Screen 
+            name="Booking_details" 
+            component={BookingDetailsScreen}
+            initialParams={{carId: 1, startDate: '2026-10-01', endDate: '2026-10-04'}}
+            options={{ headerShown: false }}
+          />
         <Stack.Screen name="Profile" component={ProfileScreen}/>
       </Stack.Navigator>
     </NavigationContainer>
