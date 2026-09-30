@@ -26,9 +26,9 @@ const styles = StyleSheet.create({
         padding: 10,
         margin: 5,
         minHeight: 50,
+        minWidth: 250,
         justifyContent: 'center',
         alignItems: 'center',
-
         alignSelf: 'stretch'
     },
 });
