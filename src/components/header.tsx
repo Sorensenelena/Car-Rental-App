@@ -1,19 +1,20 @@
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { StyleSheet, View } from 'react-native';
+import { Image, StyleSheet, View } from 'react-native';
 import { RootStackParamList } from '../../types';
 
 export default function Header() {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   return (
-    <View>
-        
+    <View style={{alignContent: 'flex-start', flexDirection: 'row', }}>
+        <Image style={styles.logo} source={require('@/assets/images/logoipsum-logo-icon.png')} />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-    header: {
-
+    logo: {
+        alignSelf: 'flex-start',
+        margin: 10,
     },
 });

@@ -1,4 +1,5 @@
 import ProfileButton from '@/components/Profile-button';
+import Header from '@/components/header';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
@@ -10,14 +11,14 @@ export default function ProfileScreen() {
   return (
     <View style={styles.container}>
       <View style={styles.main}>
-        <Image style={styles.logo} source={require('@/assets/images/logoipsum-logo-icon.png')} />
-          <View style={styles.profileLogoAndInfo}>
-            <Image source={require('@/assets/images/profile-icon.png')} />
-            <View style={styles.profileInfo}>
-              <Text style={styles.text}>Name</Text>
-              <Text style={styles.text}>More Info</Text>
-            </View>
+        <Header/>
+        <View style={styles.profileLogoAndInfo}>
+          <Image source={require('@/assets/images/profile-icon.png')} />
+          <View style={styles.profileInfo}>
+            <Text style={styles.text}>Name</Text>
+            <Text style={styles.text}>More Info</Text>
           </View>
+        </View>
         <View>
           <ProfileButton name='Drivers license' link=''/>
           <ProfileButton name='Current rentals' link=''/>
@@ -45,13 +46,8 @@ const styles = StyleSheet.create({
     flex: 1,
     },           
   main: { 
-    alignItems: 'center',
-    flex: 5
+    flex: 7
     },       
-  logo: {
-    alignSelf: 'flex-start',
-    margin: 10,
-  },
   text: {
       margin: 5
   },
@@ -69,6 +65,5 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'space-between',
     alignItems: 'center'
-
   },
 }); 
