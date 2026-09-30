@@ -1,12 +1,12 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { registerRootComponent } from 'expo';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 
 import HomeScreen from '../../screens/Home';
-import SignupScreen from '../../screens/Signupscreen/Signup';
 import ProfileScreen from '../../screens/Profile';
 import SearchResultsScreen from '../../screens/Search_results';
+import SignupScreen from '../../screens/Signupscreen/Signup';
 import { RootStackParamList } from '../../types';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -14,16 +14,21 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Home">
-        <Stack.Screen name="Signup" component={SignupScreen} />
+      <Stack.Navigator initialRouteName="Profile">
+        <Stack.Screen 
+          name="Signup"
+          component={SignupScreen} 
+          options={{headerShown: false}}/>
         <Stack.Screen
           name="Home"
           component={HomeScreen}
           options={{
-            title: '',
-            headerShadowVisible: false,
-            headerLeft: () => <View style={styles.logo} />,
-            headerRight: () => <View style={styles.logo} />,
+            // Temporarily disabling header until dicided if used
+            headerShown: false
+            //title: '',
+            //headerShadowVisible: false,
+            //headerLeft: () => <View style={styles.logo} />,
+            //headerRight: () => <View style={styles.logo} />,
           }}
         />
         <Stack.Screen
