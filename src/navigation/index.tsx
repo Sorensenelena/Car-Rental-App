@@ -4,6 +4,8 @@ import { registerRootComponent } from 'expo';
 import { StyleSheet, View } from 'react-native';
 
 import HomeScreen from '../../screens/Home';
+import SignupScreen from '../../screens/Signupscreen/Signup';
+import ProfileScreen from '../../screens/Profile';
 import SearchResultsScreen from '../../screens/Search_results';
 import { RootStackParamList } from '../../types';
 
@@ -13,6 +15,7 @@ function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Home">
+        <Stack.Screen name="Signup" component={SignupScreen} />
         <Stack.Screen
           name="Home"
           component={HomeScreen}
@@ -28,6 +31,7 @@ function App() {
           component={SearchResultsScreen}
           options={{ headerShown: false }}
         />
+        <Stack.Screen name="Profile" component={ProfileScreen}/>
       </Stack.Navigator>
     </NavigationContainer>
   );
