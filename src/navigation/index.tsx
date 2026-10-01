@@ -6,6 +6,7 @@ import { StyleSheet, View } from 'react-native';
 import HomeScreen from '../../screens/Home';
 import ProfileScreen from '../../screens/Profile';
 import SearchResultsScreen from '../../screens/Search_results';
+import BookingDetailsScreen from '../../screens/Booking_details';
 import SignupScreen from '../../screens/Signupscreen/Signup';
 import StartScreen from '../../screens/Start';
 import LoginScreen from '../../screens/login';
@@ -40,10 +41,13 @@ function App() {
           component={SearchResultsScreen}
           options={{ headerShown: false }}
         />
-        <Stack.Screen
-          name="Profile"
-          component={ProfileScreen}
-          options={{ headerShown: false }} />
+        <Stack.Screen 
+            name="Booking_details" 
+            component={BookingDetailsScreen}
+            initialParams={{carId: 1, startDate: '2026-10-01', endDate: '2026-10-04'}}
+            options={{ headerShown: false }}
+          />
+        <Stack.Screen name="Profile" component={ProfileScreen}/>
       </Stack.Navigator>
     </NavigationContainer>
   );
