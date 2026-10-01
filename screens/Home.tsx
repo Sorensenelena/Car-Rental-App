@@ -16,6 +16,12 @@ export default function HomeScreen() {
     <View style={styles.container}>
       <Header/>
       <View style={styles.card}>
+        <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+          <Text style={styles.welcomeText}>Welcome to </Text>
+          <Text style={[styles.welcomeText,{color: 'green'}]}>Green</Text>
+          <Text style={[styles.welcomeText,{color: 'darkgreen'}]}>Ride</Text>
+        </View>
+        
         <TextInput
           style={styles.input}
           value={location}
@@ -51,6 +57,7 @@ const styles = StyleSheet.create({
     },          
     card: {
       flex: 7,
+      justifyContent: 'center',
     },
     input: {
       borderWidth: 1,
@@ -62,12 +69,18 @@ const styles = StyleSheet.create({
     },
     button: {
       alignSelf: 'center',
-      backgroundColor: '#808080',
+      backgroundColor: 'grey',
       paddingVertical: 10,
       paddingHorizontal: 16,
-      borderRadius: 10,
+      borderRadius: 25,
+      paddingRight: 50,
+      paddingLeft: 50
     },
     buttonText: {
       color: 'black',
+    },
+    welcomeText: {
+      fontSize: 20,
+      fontWeight: 'bold'
     },
 }); 
