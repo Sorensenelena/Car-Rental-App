@@ -1,11 +1,21 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import carsData from '../data/cars.json';
+import { Car } from '../../types';
 
 export type Booking = {
   id: string;
   carId: number;
-  startDate: string; // 'YYYY-MM-DD'
+  startDate: string;
   endDate: string;
 };
+
+export async function getAvailableCars(startDate: string, endDate: string): Promise<Car[]> {
+  const bookings = await getBookings();
+  return (carsData as Car[]).filter(car =>
+    car.isAvailable &&
+    !bookings.some(b => b.carId === car.id && b.startDate <= endDate && startDate <= b.endDate)
+  );
+}
 
 export async function getBookings(): Promise<Booking[]> {
   const raw = await AsyncStorage.getItem('bookings');
