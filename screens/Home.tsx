@@ -5,15 +5,27 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useState } from 'react';
 import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { RootStackParamList } from '../types';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-export default function HomeScreen() {
-  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
+const isDate = (s: string) => /^\d{4}-\d{2}-\d{2}$/.test(s);
+
+export default function HomeScreen({ navigation }: Props) {
   const [location, setLocation] = useState('');
   const [startdate, setStartdate] = useState('');
   const [enddate, setEnddate] = useState('');
+  const [error, setError] = useState('');
+
+  const search = () => {
+    if (!isDate(startdate) || !isDate(enddate)) return setError('Use dates like 2026-10-01');
+    if (enddate < startdate) return setError('End date must be after start date');
+    setError('');
+    navigation.navigate('SearchResults', { location, startDate: startdate, endDate: enddate });
+  };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Header/>
       <View style={styles.card}>
         <View style={{flexDirection: 'row', justifyContent: 'center', marginBottom: 5}}>
@@ -32,22 +44,23 @@ export default function HomeScreen() {
           style={styles.input}
           value={startdate}
           onChangeText={setStartdate}
-          placeholder="Start date..."
+          placeholder="Start date (YYYY-MM-DD)"
         />
         <TextInput
           style={styles.input}
           value={enddate}
           onChangeText={setEnddate}
-          placeholder="End date..."
+          placeholder="End date (YYYY-MM-DD)"
         />
         <Pressable style={styles.button}>
           <Text style={styles.buttonText}
           onPress={() => navigation.navigate('SearchResults')}
           >Search</Text>
         </Pressable>
+        {error !== '' && <Text style={styles.error}>{error}</Text>}
       </View>
       <BottomBar backButton={false} mapButton={true} profileButton={true} />
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -85,4 +98,5 @@ const styles = StyleSheet.create({
       fontSize: 20,
       fontWeight: 'bold'
     },
+    error: { color: '#B00020' },
 }); 

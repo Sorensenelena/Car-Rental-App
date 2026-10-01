@@ -1,11 +1,12 @@
-import { View, Text, Pressable, StyleSheet, TextInput } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../../types';
-import { useLayoutEffect, useState } from 'react';
-import { Ionicons } from '@expo/vector-icons';
-import { Picker } from '@react-native-picker/picker';
-import FormField from './components/formfield';
+import { useState } from 'react';
+import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import FormField from '@/components/formfield';
+import PrimaryButton from '@/components/primaryButton';
+import { common } from '@/styles/common';
+import { RootStackParamList } from '../types';
 
 const MONTHS = [
   'January',
@@ -40,18 +41,6 @@ export default function SignUpScreen() {
   const yearHasLetters = birthYear.length > 0 && !/^\d+$/.test(birthYear);
   const dateHasLetters = dayHasLetters || yearHasLetters;
 
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      title: 'Sign Up',
-      headerTitleAlign: 'center',
-      headerLeft: () => (
-        <Pressable onPress={() => navigation.navigate('Home')} style={styles.headerButton}>
-          <Ionicons name="home" size={25} color="grey" />
-        </Pressable>
-      ),
-    });
-  }, [navigation]);
-
   const handleSignup = () => {
     if (password !== ConfirmPassword || dateHasLetters) {
       return;
@@ -69,9 +58,12 @@ export default function SignUpScreen() {
   };
 
   return (
-    <View style={styles.screen}>
+    <ScrollView
+      contentContainerStyle={styles.scrollContent}
+      keyboardShouldPersistTaps="handled"
+    >
       <View style={styles.container}>
-        <View style={styles.form}>
+        <View style={common.form}>
           <View style={styles.row}>
             <View style={styles.nameFieldContainer}>
               <Text style={styles.label}>First Name</Text>
@@ -95,16 +87,18 @@ export default function SignUpScreen() {
           <View style={styles.row}>
             <View style={styles.monthField}>
               <Text style={styles.label}>Month</Text>
-              <Picker
-                selectedValue={birthMonth}
-                onValueChange={(itemValue) => setBirthMonth(itemValue)}
-                style={styles.monthPicker}
-              >
-                <Picker.Item label="Select month" value="" />
-                {MONTHS.map((month) => (
-                  <Picker.Item key={month} label={month} value={month} />
-                ))}
-              </Picker>
+              <View style={styles.pickerWrapper}>
+                <Picker
+                  selectedValue={birthMonth}
+                  onValueChange={(itemValue) => setBirthMonth(itemValue)}
+                  style={styles.monthPicker}
+                >
+                  <Picker.Item label="Select month" value="" />
+                  {MONTHS.map((month) => (
+                    <Picker.Item key={month} label={month} value={month} />
+                  ))}
+                </Picker>
+              </View>
             </View>
 
             <View style={styles.dayField}>
@@ -129,19 +123,15 @@ export default function SignUpScreen() {
           </View>
 
           {dateHasLetters && (
-            <Text style={styles.errorText}>Day and year must be numbers only</Text>
+            <Text style={common.errorText}>Day and year must be numbers only</Text>
           )}
+
           <FormField
             label="Username"
             value={username}
             onChangeText={setUsername}
             autoCapitalize="none"
           />
-
-          <View>
-            <Text style={styles.label}>Email</Text>
-            <TextInput style={styles.input} value={email} onChangeText={setEmail} />
-          </View>
 
           <FormField
             label="Email"
@@ -167,9 +157,11 @@ export default function SignUpScreen() {
             autoCapitalize="none"
           />
 
-          <Pressable onPress={handleSignup} style={styles.button}>
-            <Text style={styles.buttonText}>Sign up</Text>
-          </Pressable>
+          <PrimaryButton
+            title="Sign up"
+            onPress={handleSignup}
+            style={styles.signupButton}
+          />
         </View>
       </View>
 
@@ -179,7 +171,7 @@ export default function SignUpScreen() {
           <Text>Login</Text>
         </Pressable>
       </View>
-    </View>
+    </ScrollView>
   );
 }
 
@@ -191,22 +183,10 @@ const inputBase = {
 } as const;
 
 const styles = StyleSheet.create({
-  screen: {
-    flex: 1,
-  },
   container: {
-    flex: 1,
     alignItems: 'center',
-    justifyContent: 'flex-start',
     paddingTop: 20,
   },
-  form: {
-    width: '80%',
-  },
-  headerButton: {
-    paddingHorizontal: 5,
-  },
-
   row: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -224,54 +204,42 @@ const styles = StyleSheet.create({
   yearField: {
     width: '26%',
   },
-
   label: {
     marginBottom: 5,
-  },
-  input: {
-    ...inputBase,
-    marginBottom: 5,
-    marginTop: 3,
   },
   smallInput: {
     ...inputBase,
     width: '100%',
     height: 35,
   },
-  monthPicker: {
+  pickerWrapper: {
     backgroundColor: 'grey',
-    width: '100%',
+    borderRadius: 10,
+    overflow: 'hidden',
     height: 35,
+    justifyContent: 'center',
   },
-
-  button: {
-    alignSelf: 'center',
-    backgroundColor: 'grey',
-    paddingVertical: 8,
-    paddingHorizontal: 25,
-    borderRadius: 14,
-    marginTop: 20,
-  },
-  buttonText: {
+  monthPicker: {
+    width: '100%',
     color: 'white',
-    fontSize: 18,
-    fontWeight: 'bold',
+    backgroundColor: 'transparent',
   },
-
   loginRow: {
-    position: 'absolute',
-    top: 500,
-    right: 20,
     flexDirection: 'row',
     alignItems: 'center',
+    alignSelf: 'center',
     gap: 5,
+    marginTop: 20,
   },
   loginText: {
     fontSize: 14,
   },
-  errorText: {
-    color: 'red',
-    fontSize: 12,
-    marginTop: 2,
+  scrollContent: {
+    flexGrow: 1,
+    paddingBottom: 40,
+  },
+  signupButton: {
+    width: '60%',
+    alignSelf: 'center',
   },
 });

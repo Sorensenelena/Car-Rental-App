@@ -2,7 +2,10 @@ export type RootStackParamList = {
   Home: undefined;
   Signup: undefined;
   Profile: undefined;
-  SearchResults: undefined;
+  SearchResults: { location: string; startDate: string; endDate: string };
+  Booking_details: { carId: number; startDate: string; endDate: string };
+  Start: undefined;
+  Login: undefined;
     // TODO: add the other screens here
 };
 
