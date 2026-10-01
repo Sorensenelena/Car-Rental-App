@@ -6,7 +6,7 @@ import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-
 import FormField from '@/components/formfield';
 import PrimaryButton from '@/components/primaryButton';
 import { common } from '@/styles/common';
-import { RootStackParamList } from '../../types';
+import { RootStackParamList } from '../types';
 
 const MONTHS = [
   'January',

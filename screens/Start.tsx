@@ -1,9 +1,9 @@
-import { View, StyleSheet, Image } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../../types';
 import PrimaryButton from '@/components/primaryButton';
 import { common } from '@/styles/common';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { Image, StyleSheet, View } from 'react-native';
+import { RootStackParamList } from '../types';
 
 export default function StartScreen() {
     const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
@@ -20,7 +20,7 @@ export default function StartScreen() {
             </View>
         </View>
     );
-}  
+}
 
 const styles = StyleSheet.create({
     logo: {

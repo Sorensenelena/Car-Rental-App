@@ -1,11 +1,11 @@
+import FormField from '@/components/formfield';
+import PrimaryButton from '@/components/primaryButton';
+import { common } from '@/styles/common';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import FormField from '@/components/formfield';
-import PrimaryButton from '@/components/primaryButton';
-import { common } from '@/styles/common';
-import { RootStackParamList } from '../../types';
+import { RootStackParamList } from '../types';
 
 const DUMMY_ACCOUNT = {
     username: 'admin',

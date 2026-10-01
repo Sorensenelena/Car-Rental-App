@@ -1,15 +1,14 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { registerRootComponent } from 'expo';
-import { StyleSheet, View, Pressable, } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { StyleSheet, View } from 'react-native';
 
 import HomeScreen from '../../screens/Home';
-import SignupScreen from '../../screens/Signupscreen/Signup';
-import StartScreen from '../../screens/StartScreen/Start';
 import ProfileScreen from '../../screens/Profile';
 import SearchResultsScreen from '../../screens/Search_results';
-import LoginScreen from '../../screens/LoginScreen/login';
+import SignupScreen from '../../screens/Signupscreen/Signup';
+import StartScreen from '../../screens/Start';
+import LoginScreen from '../../screens/login';
 import { RootStackParamList } from '../../types';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -20,11 +19,11 @@ function App() {
 
       <Stack.Navigator initialRouteName="Start">
 
-        <Stack.Screen  name="Start" component={StartScreen} options={{ headerShown: false }}/>
-        
-        <Stack.Screen name="Signup" component={SignupScreen} options={{ headerTitleAlign: 'center'}} />
+        <Stack.Screen name="Start" component={StartScreen} options={{ headerShown: false }} />
 
-        <Stack.Screen name="Login" component={LoginScreen} options={{ headerTitleAlign: 'center'}} />
+        <Stack.Screen name="Signup" component={SignupScreen} options={{ headerTitleAlign: 'center' }} />
+
+        <Stack.Screen name="Login" component={LoginScreen} options={{ headerTitleAlign: 'center' }} />
 
         <Stack.Screen
           name="Home"
@@ -53,8 +52,8 @@ function App() {
 const styles = StyleSheet.create({
   logo: {
     width: 50,
-    height: 50, 
-    backgroundColor: '#D3D3D3', 
+    height: 50,
+    backgroundColor: '#D3D3D3',
     margin: 10
   },
 
