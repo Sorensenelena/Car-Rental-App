@@ -21,7 +21,9 @@ export default function FormField({ label, error, small, style, ...inputProps }:
 }
 
 const styles = StyleSheet.create({
+
     label: {
+        color: '#000000',
         marginBottom: 5,
     },
     input: {

@@ -1,9 +1,17 @@
-import { View, Text, Pressable, StyleSheet, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../../types';
 import { useState } from 'react';
-import FormField from '../Signupscreen/components/formfield';
+import { StyleSheet, Text, View } from 'react-native';
+import FormField from '@/components/formfield';
+import PrimaryButton from '@/components/primaryButton';
+import { common } from '@/styles/common';
+import { RootStackParamList } from '../../types';
+
+const DUMMY_ACCOUNT = {
+    username: 'admin',
+    email: 'admin@example.com',
+    password: '1234',
+};
 
 export default function LoginScreen() {
     const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
@@ -11,13 +19,6 @@ export default function LoginScreen() {
     const [identifier, setIdentifier] = useState('');
     const [password, setPassword] = useState('');
     const [loginError, setLoginError] = useState('');
-
-
-    const DUMMY_ACCOUNT = {
-        username: 'admin',
-        email: 'admin@example.com',
-        password: '1234',
-    };
 
     const handleLogin = () => {
         const value = identifier.trim().toLowerCase();
@@ -34,66 +35,46 @@ export default function LoginScreen() {
         }
     };
 
-
     return (
-        <View style={styles.screen}>
-            <View style={styles.container}>
-                <View style={styles.form}>
+        <View style={common.screen}>
+            <View style={common.container}>
+                <View style={common.form}>
                     <FormField
                         label="Email/username"
                         value={identifier}
-                        onChangeText={setIdentifier}
+                        onChangeText={(text) => {
+                            setIdentifier(text);
+                            setLoginError('');
+                        }}
                         autoCapitalize="none"
                     />
 
                     <FormField
                         label="Password"
                         value={password}
-                        onChangeText={setPassword}
+                        onChangeText={(text) => {
+                            setPassword(text);
+                            setLoginError('');
+                        }}
                         secureTextEntry
                         autoCapitalize="none"
                     />
-                </View>
-                {loginError !== '' && <Text style={styles.errorText}>{loginError}</Text>}
 
-                <Pressable onPress={handleLogin} style={styles.button}>
-                    <Text style={styles.buttonText}>Login</Text>
-                </Pressable>
+                    {loginError !== '' && <Text style={common.errorText}>{loginError}</Text>}
+                    <PrimaryButton
+                        title="Login"
+                        onPress={handleLogin}
+                        style={styles.loginButton}
+                    />
+                </View>
             </View>
         </View>
-
     );
 }
 
 const styles = StyleSheet.create({
-    screen: {
-        flex: 1,
-    },
-    button: {
+    loginButton: {
+        width: '60%',
         alignSelf: 'center',
-        backgroundColor: 'grey',
-        paddingVertical: 8,
-        paddingHorizontal: 25,
-        borderRadius: 14,
-        marginTop: 20,
-    },
-    buttonText: {
-        color: 'white',
-        fontSize: 18,
-        fontWeight: 'bold',
-    },
-    container: {
-        flex: 1,
-        paddingTop: 20,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    form: {
-        width: '80%',
-    },
-    errorText: {
-        color: 'red',
-        fontSize: 12,
-        marginTop: 2,
     },
 });
