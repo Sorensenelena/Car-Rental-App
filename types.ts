@@ -4,7 +4,6 @@ export type RootStackParamList = {
   Profile: undefined;
   SearchResults: { location: string; startDate: string; endDate: string };
   Booking_details: { carId: number; startDate: string; endDate: string };
-  SearchResults: undefined;
   Start: undefined;
   Login: undefined;
     // TODO: add the other screens here

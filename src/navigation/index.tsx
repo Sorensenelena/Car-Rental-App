@@ -7,7 +7,7 @@ import HomeScreen from '../../screens/Home';
 import ProfileScreen from '../../screens/Profile';
 import SearchResultsScreen from '../../screens/Search_results';
 import BookingDetailsScreen from '../../screens/Booking_details';
-import SignupScreen from '../../screens/Signupscreen/Signup';
+import SignupScreen from '../../screens/signup';
 import StartScreen from '../../screens/Start';
 import LoginScreen from '../../screens/login';
 import { RootStackParamList } from '../../types';
