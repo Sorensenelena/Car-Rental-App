@@ -16,7 +16,7 @@ export default function HomeScreen() {
     <View style={styles.container}>
       <Header/>
       <View style={styles.card}>
-        <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+        <View style={{flexDirection: 'row', justifyContent: 'center', marginBottom: 5}}>
           <Text style={styles.welcomeText}>Welcome to </Text>
           <Text style={[styles.welcomeText,{color: 'green'}]}>Green</Text>
           <Text style={[styles.welcomeText,{color: 'darkgreen'}]}>Ride</Text>
@@ -63,7 +63,9 @@ const styles = StyleSheet.create({
       borderWidth: 1,
       borderRadius: 10,
       padding: 20,
-      margin: 10,
+      marginLeft: 15,
+      marginRight: 15,
+      marginBottom: 10,
       backgroundColor: '#D3D3D3',
       borderColor: '#D3D3D3',
     },

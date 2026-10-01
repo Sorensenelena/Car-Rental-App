@@ -1,9 +1,11 @@
-import { FlatList, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import BottomBar from '@/components/bottom-bar';
+import Header from '@/components/header';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList, Car } from '../types';
+import { FlatList, StyleSheet, Text, TextInput, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import carsData from '../src/data/cars.json';
+import { Car, RootStackParamList } from '../types';
 
 const cars: Car[] = carsData;
 
@@ -12,8 +14,8 @@ export default function SearchResultsScreen() {
 
   return (
     <SafeAreaView style={styles.screen}>
-      <View style={styles.logo} />
-
+      <Header/>
+      <View style={{flex: 7}}>
       <View style={styles.bar}>
         <TextInput style={styles.barInput} placeholder="[Search details]" />
         <View style={styles.icon} />
@@ -43,21 +45,21 @@ export default function SearchResultsScreen() {
           </View>
         )}
       />
-
-      <View style={styles.bottomBar}>
-        <Pressable style={styles.icon} onPress={() => navigation.goBack()} />
-        <Pressable style={styles.mapButton}>
-          <Text>Map View</Text>
-        </Pressable>
-        <View style={styles.icon} />
       </View>
+      <BottomBar backButton={true} mapButton={true} profileButton={true}/>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: 'white' },
-  logo: { width: 50, height: 50, backgroundColor: '#D3D3D3', margin: 10 },
+  screen: { 
+    flex: 1, 
+    backgroundColor: 'white' },
+  logo: { 
+    width: 50, 
+    height: 50, 
+    backgroundColor: '#D3D3D3', 
+    margin: 10 },
   bar: {
     flexDirection: 'row',
     alignItems: 'center',
