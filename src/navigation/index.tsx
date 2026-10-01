@@ -1,7 +1,7 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { registerRootComponent } from 'expo';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 
 import HomeScreen from '../../screens/Home';
 import ProfileScreen from '../../screens/Profile';
@@ -30,10 +30,12 @@ function App() {
           name="Home"
           component={HomeScreen}
           options={{
-            title: '',
-            headerShadowVisible: false,
-            headerLeft: () => <View style={styles.logo} />,
-            headerRight: () => <View style={styles.logo} />,
+            // Temporarily disabling header until dicided if used
+            headerShown: false
+            //title: '',
+            //headerShadowVisible: false,
+            //headerLeft: () => <View style={styles.logo} />,
+            //headerRight: () => <View style={styles.logo} />,
           }}
         />
         <Stack.Screen
