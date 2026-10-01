@@ -15,6 +15,8 @@ export default function Header() {
 const styles = StyleSheet.create({
     logo: {
         alignSelf: 'flex-start',
-        margin: 10,
+        marginTop: 20,
+        marginLeft: 20,
+        marginBottom: 10,
     },
 });

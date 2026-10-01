@@ -17,7 +17,7 @@ function BackButton(){
     return(
       <View >
         <Pressable
-          onPress={() => {navigation.goBack}}>
+          onPress={() => navigation.goBack()}>
           <Image source={require('@/assets/images/arrow-left-square.png')} />
         </Pressable>
       </View>
@@ -25,11 +25,14 @@ function BackButton(){
 }
 
 export default function BottomBar({backButton}: BottomBarProps) {
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   return (
     <View style={styles.bottomBar}>
       {backButton && <BackButton/>} {/*only renders if backbutton is true*/}
       <View style={{marginLeft: 'auto'}}>
+        <Pressable onPress={() => navigation.navigate('Profile')}>
           <Image style={{width: 60, height: 60, }} source={require('@/assets/images/profile-icon.png')} />
+        </Pressable>
       </View>
     </View>
   );

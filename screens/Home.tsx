@@ -14,8 +14,8 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
+      <Header/>
       <View style={styles.card}>
-        <Header/>
         <TextInput
           style={styles.input}
           value={location}
@@ -51,13 +51,12 @@ const styles = StyleSheet.create({
     },          
     card: {
       flex: 7,
-      padding: 10,
-      gap: 20, 
     },
     input: {
       borderWidth: 1,
       borderRadius: 10,
       padding: 20,
+      margin: 10,
       backgroundColor: '#D3D3D3',
       borderColor: '#D3D3D3',
     },

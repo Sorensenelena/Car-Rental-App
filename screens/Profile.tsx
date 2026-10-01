@@ -11,8 +11,8 @@ export default function ProfileScreen() {
 
   return (
     <View style={styles.container}>
+      <Header/>
       <View style={styles.main}>
-        <Header/>
         <View style={styles.profileLogoAndInfo}>
           <Image source={require('@/assets/images/profile-icon.png')} />
           <View style={styles.profileInfo}>
@@ -26,7 +26,7 @@ export default function ProfileScreen() {
           <ProfileButton name='Previous rentals' link=''/>
         </View>
       </View>
-      <BottomBar backButton={true} screen='Home' />
+      <BottomBar backButton={true}/>
     </View>
   );
 }
