@@ -5,33 +5,29 @@ import { RootStackParamList } from '../../types';
 
 
 type BottomBarProps = {
-  screen: keyof RootStackParamList;
   backButton: boolean; // set to true if menu needs a go back button
 
 };
 
 type BackButtonProps = {
-  screen: keyof RootStackParamList;
 };
 
-function BackButton({screen}: BackButtonProps){
+function BackButton(){
     const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
     return(
       <View >
         <Pressable
-          onPress={() => {navigation.navigate(screen)}}>
+          onPress={() => {navigation.goBack}}>
           <Image source={require('@/assets/images/arrow-left-square.png')} />
         </Pressable>
       </View>
     );
 }
 
-export default function BottomBar({screen, backButton}: BottomBarProps) {
+export default function BottomBar({backButton}: BottomBarProps) {
   return (
     <View style={styles.bottomBar}>
-      {backButton && <BackButton screen={screen}/>} {/*only renders if backbutton is true*/}
-
-
+      {backButton && <BackButton/>} {/*only renders if backbutton is true*/}
       <View style={{marginLeft: 'auto'}}>
           <Image style={{width: 60, height: 60, }} source={require('@/assets/images/profile-icon.png')} />
       </View>
