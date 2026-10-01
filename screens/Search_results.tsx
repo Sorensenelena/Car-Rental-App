@@ -1,14 +1,11 @@
 import BottomBar from '@/components/bottom-bar';
 import Header from '@/components/header';
-import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { FlatList, StyleSheet, Text, TextInput, View, Pressable } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import carsData from '../src/data/cars.json';
-import { Car, RootStackParamList } from '../types';
-import { useEffect, useState } from 'react';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { useEffect, useState } from 'react';
+import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { getAvailableCars } from '../src/services/bookingService';
+import { Car, RootStackParamList } from '../types';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'SearchResults'>;
 
@@ -25,7 +22,7 @@ export default function SearchResultsScreen({ route, navigation }: Props) {
       <Header/>
       <View style={{flex: 7}}>
       <View style={styles.bar}>
-        <Text style={styles.barText}>{location || 'Any location'} · {startDate} → {endDate}</Text>
+        <Text style={{}}>{location || 'Any location'} · {startDate} → {endDate}</Text>
       </View>
 
       <FlatList

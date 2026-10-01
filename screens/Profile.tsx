@@ -1,6 +1,6 @@
 import BottomBar from '@/components/bottom-bar';
 import Header from '@/components/header';
-import ProfileButton from '@/components/profile-button';
+import ProfileButton from '@/components/Profile-button';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Image, StyleSheet, Text, View } from 'react-native';
