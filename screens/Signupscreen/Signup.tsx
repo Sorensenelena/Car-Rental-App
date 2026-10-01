@@ -1,9 +1,8 @@
-import { View, Text, Pressable, StyleSheet, TextInput } from 'react-native';
+import { View, Text, Pressable, StyleSheet, TextInput, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../types';
-import { useLayoutEffect, useState } from 'react';
-import { Ionicons } from '@expo/vector-icons';
+import { useState } from 'react';
 import { Picker } from '@react-native-picker/picker';
 import FormField from './components/formfield';
 
@@ -40,18 +39,6 @@ export default function SignUpScreen() {
   const yearHasLetters = birthYear.length > 0 && !/^\d+$/.test(birthYear);
   const dateHasLetters = dayHasLetters || yearHasLetters;
 
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      title: 'Sign Up',
-      headerTitleAlign: 'center',
-      headerLeft: () => (
-        <Pressable onPress={() => navigation.navigate('Home')} style={styles.headerButton}>
-          <Ionicons name="home" size={25} color="grey" />
-        </Pressable>
-      ),
-    });
-  }, [navigation]);
-
   const handleSignup = () => {
     if (password !== ConfirmPassword || dateHasLetters) {
       return;
@@ -69,117 +56,119 @@ export default function SignUpScreen() {
   };
 
   return (
-    <View style={styles.screen}>
-      <View style={styles.container}>
-        <View style={styles.form}>
-          <View style={styles.row}>
-            <View style={styles.nameFieldContainer}>
-              <Text style={styles.label}>First Name</Text>
-              <TextInput
-                style={styles.smallInput}
-                value={firstName}
-                onChangeText={setFirstName}
-              />
+    <ScrollView
+      contentContainerStyle={styles.scrollContent}
+      keyboardShouldPersistTaps="handled"
+    >
+      <View style={styles.screen}>
+        <View style={styles.container}>
+          <View style={styles.form}>
+            <View style={styles.row}>
+              <View style={styles.nameFieldContainer}>
+                <Text style={styles.label}>First Name</Text>
+                <TextInput
+                  style={styles.smallInput}
+                  value={firstName}
+                  onChangeText={setFirstName}
+                />
+              </View>
+
+              <View style={styles.nameFieldContainer}>
+                <Text style={styles.label}>Last Name</Text>
+                <TextInput
+                  style={styles.smallInput}
+                  value={lastName}
+                  onChangeText={setLastName}
+                />
+              </View>
             </View>
 
-            <View style={styles.nameFieldContainer}>
-              <Text style={styles.label}>Last Name</Text>
-              <TextInput
-                style={styles.smallInput}
-                value={lastName}
-                onChangeText={setLastName}
-              />
+            <View style={styles.row}>
+              <View style={styles.monthField}>
+                <Text style={styles.label}>Month</Text>
+                <View style={styles.pickerWrapper}>
+                  <Picker
+                    selectedValue={birthMonth}
+                    onValueChange={(itemValue) => setBirthMonth(itemValue)}
+                    style={styles.monthPicker}
+                  >
+                    <Picker.Item label="Select month" value="" />
+                    {MONTHS.map((month) => (
+                      <Picker.Item key={month} label={month} value={month} />
+                    ))}
+                  </Picker>
+                </View>
+              </View>
+
+              <View style={styles.dayField}>
+                <FormField
+                  label="Day"
+                  value={birthDay}
+                  onChangeText={setBirthDay}
+                  keyboardType="numeric"
+                  small
+                />
+              </View>
+
+              <View style={styles.yearField}>
+                <FormField
+                  label="Year"
+                  value={birthYear}
+                  onChangeText={setBirthYear}
+                  keyboardType="numeric"
+                  small
+                />
+              </View>
             </View>
+
+            {dateHasLetters && (
+              <Text style={styles.errorText}>Day and year must be numbers only</Text>
+            )}
+            <FormField
+              label="Username"
+              value={username}
+              onChangeText={setUsername}
+              autoCapitalize="none"
+            />
+
+            <FormField
+              label="Email"
+              value={email}
+              onChangeText={setEmail}
+              autoCapitalize="none"
+            />
+
+            <FormField
+              label="Password"
+              value={password}
+              onChangeText={setPassword}
+              secureTextEntry
+              autoCapitalize="none"
+            />
+
+            <FormField
+              label="Confirm password"
+              value={ConfirmPassword}
+              onChangeText={setConfirmPassword}
+              secureTextEntry
+              error={passwordsMismatch ? 'Passwords do not match' : undefined}
+              autoCapitalize="none"
+            />
+
+            <Pressable onPress={handleSignup} style={styles.button}>
+              <Text style={styles.buttonText}>Sign up</Text>
+            </Pressable>
           </View>
+        </View>
 
-          <View style={styles.row}>
-            <View style={styles.monthField}>
-              <Text style={styles.label}>Month</Text>
-              <Picker
-                selectedValue={birthMonth}
-                onValueChange={(itemValue) => setBirthMonth(itemValue)}
-                style={styles.monthPicker}
-              >
-                <Picker.Item label="Select month" value="" />
-                {MONTHS.map((month) => (
-                  <Picker.Item key={month} label={month} value={month} />
-                ))}
-              </Picker>
-            </View>
-
-            <View style={styles.dayField}>
-              <FormField
-                label="Day"
-                value={birthDay}
-                onChangeText={setBirthDay}
-                keyboardType="numeric"
-                small
-              />
-            </View>
-
-            <View style={styles.yearField}>
-              <FormField
-                label="Year"
-                value={birthYear}
-                onChangeText={setBirthYear}
-                keyboardType="numeric"
-                small
-              />
-            </View>
-          </View>
-
-          {dateHasLetters && (
-            <Text style={styles.errorText}>Day and year must be numbers only</Text>
-          )}
-          <FormField
-            label="Username"
-            value={username}
-            onChangeText={setUsername}
-            autoCapitalize="none"
-          />
-
-          <View>
-            <Text style={styles.label}>Email</Text>
-            <TextInput style={styles.input} value={email} onChangeText={setEmail} />
-          </View>
-
-          <FormField
-            label="Email"
-            value={email}
-            onChangeText={setEmail}
-            autoCapitalize="none"
-          />
-
-          <FormField
-            label="Password"
-            value={password}
-            onChangeText={setPassword}
-            secureTextEntry
-            autoCapitalize="none"
-          />
-
-          <FormField
-            label="Confirm password"
-            value={ConfirmPassword}
-            onChangeText={setConfirmPassword}
-            secureTextEntry
-            error={passwordsMismatch ? 'Passwords do not match' : undefined}
-            autoCapitalize="none"
-          />
-
-          <Pressable onPress={handleSignup} style={styles.button}>
-            <Text style={styles.buttonText}>Sign up</Text>
+        <View style={styles.loginRow}>
+          <Text style={styles.loginText}>already have an account?</Text>
+          <Pressable onPress={() => navigation.navigate('Login')}>
+            <Text>Login</Text>
           </Pressable>
         </View>
       </View>
-
-      <View style={styles.loginRow}>
-        <Text style={styles.loginText}>already have an account?</Text>
-        <Pressable onPress={() => navigation.navigate('Login')}>
-          <Text>Login</Text>
-        </Pressable>
-      </View>
-    </View>
+    </ScrollView>
   );
 }
 
@@ -195,9 +184,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   container: {
-    flex: 1,
     alignItems: 'center',
-    justifyContent: 'flex-start',
     paddingTop: 20,
   },
   form: {
@@ -238,12 +225,18 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 35,
   },
-  monthPicker: {
+  pickerWrapper: {
     backgroundColor: 'grey',
-    width: '100%',
+    borderRadius: 10,
+    overflow: 'hidden',   // clips the picker to the rounded corners
     height: 35,
+    justifyContent: 'center',
   },
-
+  monthPicker: {
+    width: '100%',
+    color: 'white',
+    backgroundColor: 'transparent',
+  },
   button: {
     alignSelf: 'center',
     backgroundColor: 'grey',
@@ -257,14 +250,12 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
-
   loginRow: {
-    position: 'absolute',
-    top: 500,
-    right: 20,
     flexDirection: 'row',
     alignItems: 'center',
+    alignSelf: 'center',
     gap: 5,
+    marginTop: 20,
   },
   loginText: {
     fontSize: 14,
@@ -273,5 +264,9 @@ const styles = StyleSheet.create({
     color: 'red',
     fontSize: 12,
     marginTop: 2,
+  },
+  scrollContent: {
+    flexGrow: 1,
+    paddingBottom: 40,
   },
 });
