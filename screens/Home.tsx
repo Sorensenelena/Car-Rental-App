@@ -40,7 +40,7 @@ export default function HomeScreen() {
           >Search</Text>
         </Pressable>
       </View>
-      <BottomBar backButton={false}/>
+      <BottomBar backButton={false} mapButton={true} profileButton={true} />
     </View>
   );
 }

@@ -26,7 +26,7 @@ export default function ProfileScreen() {
           <ProfileButton name='Previous rentals' link=''/>
         </View>
       </View>
-      <BottomBar backButton={true}/>
+      <BottomBar backButton={true} profileButton={false} mapButton={true}/>
     </View>
   );
 }
