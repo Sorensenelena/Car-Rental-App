@@ -1,10 +1,10 @@
+import BottomBar from '@/components/bottom-bar';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useState } from 'react';
-import { View, Text, Pressable, StyleSheet } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { addBooking, clearBookings } from '../src/services/bookingService';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types';
-import BottomBar from '@/components/Bottombar';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Booking_details'>;
 
@@ -38,14 +38,14 @@ export default function BookingDetailsScreen({ route }: Props) {
                 <Text style={styles.buttonText}>Clear bookings</Text>
             </Pressable>
         </View>
-        <BottomBar/>
+      <BottomBar backButton={true} mapButton={true} profileButton={true}/>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#fff' },
-  content: { flex: 1, justifyContent: 'center', gap: 10, padding: 20},
+  content: { flex: 7, justifyContent: 'center', gap: 10, padding: 20},
   title: { fontSize: 24, fontWeight: 'bold' },
   button: { alignSelf: 'flex-start', backgroundColor: '#333', paddingVertical: 10, paddingHorizontal: 24, borderRadius: 20, marginTop: 12 },
   buttonText: { color: '#fff', fontWeight: 'bold' },
