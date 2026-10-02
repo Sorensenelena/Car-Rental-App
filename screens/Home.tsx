@@ -26,14 +26,14 @@ export default function HomeScreen({ navigation }: Props) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Header/>
+      <Header />
       <View style={styles.card}>
-        <View style={{flexDirection: 'row', justifyContent: 'center', marginBottom: 5}}>
+        <View style={{ flexDirection: 'row', justifyContent: 'center', marginBottom: 5 }}>
           <Text style={styles.welcomeText}>Welcome to </Text>
-          <Text style={[styles.welcomeText,{color: 'green'}]}>Green</Text>
-          <Text style={[styles.welcomeText,{color: 'darkgreen'}]}>Ride</Text>
+          <Text style={[styles.welcomeText, { color: 'green' }]}>Green</Text>
+          <Text style={[styles.welcomeText, { color: 'darkgreen' }]}>Ride</Text>
         </View>
-        
+
         <TextInput
           style={styles.input}
           value={location}
@@ -52,10 +52,8 @@ export default function HomeScreen({ navigation }: Props) {
           onChangeText={setEnddate}
           placeholder="End date (YYYY-MM-DD)"
         />
-        <Pressable style={styles.button}>
-          <Text style={styles.buttonText}
-          onPress={() => navigation.navigate('SearchResults')}
-          >Search</Text>
+        <Pressable style={styles.button} onPress={search}>
+          <Text style={styles.buttonText}>Search</Text>
         </Pressable>
         {error !== '' && <Text style={styles.error}>{error}</Text>}
       </View>
@@ -64,39 +62,39 @@ export default function HomeScreen({ navigation }: Props) {
   );
 }
 
-const styles = StyleSheet.create({            
-    container:{
-      flex: 1
-    },          
-    card: {
-      flex: 7,
-      justifyContent: 'center',
-    },
-    input: {
-      borderWidth: 1,
-      borderRadius: 10,
-      padding: 20,
-      marginLeft: 15,
-      marginRight: 15,
-      marginBottom: 10,
-      backgroundColor: '#D3D3D3',
-      borderColor: '#D3D3D3',
-    },
-    button: {
-      alignSelf: 'center',
-      backgroundColor: 'grey',
-      paddingVertical: 10,
-      paddingHorizontal: 16,
-      borderRadius: 25,
-      paddingRight: 50,
-      paddingLeft: 50
-    },
-    buttonText: {
-      color: 'black',
-    },
-    welcomeText: {
-      fontSize: 20,
-      fontWeight: 'bold'
-    },
-    error: { color: '#B00020' },
+const styles = StyleSheet.create({
+  container: {
+    flex: 1
+  },
+  card: {
+    flex: 7,
+    justifyContent: 'center',
+  },
+  input: {
+    borderWidth: 1,
+    borderRadius: 10,
+    padding: 20,
+    marginLeft: 15,
+    marginRight: 15,
+    marginBottom: 10,
+    backgroundColor: '#D3D3D3',
+    borderColor: '#D3D3D3',
+  },
+  button: {
+    alignSelf: 'center',
+    backgroundColor: 'grey',
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: 25,
+    paddingRight: 50,
+    paddingLeft: 50
+  },
+  buttonText: {
+    color: 'black',
+  },
+  welcomeText: {
+    fontSize: 20,
+    fontWeight: 'bold'
+  },
+  error: { color: '#B00020' },
 }); 
