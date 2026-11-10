@@ -1,0 +1,69 @@
+@startuml car-rental-navigation
+' Navigation model (Garrett notation) for the car rental app
+' Plain line = two-way navigation, arrow = one-way only.
+' Any journey not drawn is not offered by the app.
+
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 13
+skinparam linetype ortho
+skinparam nodesep 60
+skinparam ranksep 60
+skinparam padding 6
+skinparam rectangle {
+ roundCorner 0
+ MinimumWidth 150
+ MinimumHeight 50
+}
+skinparam arrowFontSize 11
+skinparam arrowFontStyle italic
+
+' Row 1
+rectangle "Start Page ID-01" as start
+' Row 2
+rectangle "Login ID-02" as login
+rectangle "Sign Up ID-03" as signup
+' Row 3
+rectangle "Homepage ID-04" as home
+' Row 4
+rectangle "Search Results ID-05" as results
+rectangle "Map ID-06" as map
+rectangle "Profile DI-07" as profile
+' Booking flow
+collections "Car Detail View ID-08" as car
+rectangle "Booking Details ID-09" as booking
+rectangle "Payment ID-10" as payment
+rectangle "Confirmation ID-11" as confirm
+
+' Entry
+start -down- login
+start -down- signup
+login -down-> home
+signup -down-> home
+
+' Main hub
+home -down- results
+home -down- map
+home -down- profile
+results -right- map
+profile -up-> start
+
+' Choosing a car
+results -down- car
+map -down- car
+
+' Booking
+car -down- booking
+booking -down- payment
+payment -down-> confirm
+confirm -up-> home
+
+legend right
+ plain line = user can move both ways
+ arrow = one-way only
+ stacked page = one page per car
+ Profile -> Start Page: log out
+ Confirmation -> Homepage: done
+endlegend
+@enduml

@@ -4,10 +4,12 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useEffect, useState } from 'react';
 import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { getAvailableCars } from '../src/services/bookingService';
-import { Car, RootStackParamList } from '../types';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList, Car } from '../types';
+import carsData from '../src/data/cars.json';
 
-type Props = NativeStackScreenProps<RootStackParamList, 'SearchResults'>;
+const cars: Car[] = carsData;
 
 export default function SearchResultsScreen({ route, navigation }: Props) {
   const { location, startDate, endDate } = route.params;
@@ -28,21 +30,19 @@ export default function SearchResultsScreen({ route, navigation }: Props) {
       <FlatList
         style={styles.list}
         data={cars}
-        keyExtractor={(item) => String(item.id)}
+        keyExtractor={(item) => item.id}
         contentContainerStyle={{ gap: 10 }}
-        ListEmptyComponent={<Text>No cars available for these dates</Text>}
-        renderItem={({ item }) => (
-          <Pressable
-            style={styles.card}
-            onPress={() => navigation.navigate('Booking_details', { carId: item.id, startDate, endDate })}
-          >
+        ListEmptyComponent={<Text>No cars found</Text>}
+        renderItem={({item}) => (
+          <View style={[styles.card, !item.isAvailable && styles.unavailable]}>
             <View style={styles.image} />
             <View style={{ flex: 1 }}>
               <Text style={styles.title}>{item.make} {item.model}</Text>
               <Text>{item.year} · {item.color}</Text>
+              {!item.isAvailable && <Text>Unavailable</Text>}
             </View>
             <Text style={styles.price}>{item.pricePerDay} kr</Text>
-          </Pressable>
+          </View>
         )}
       />
       </View>
@@ -73,7 +73,16 @@ const styles = StyleSheet.create({
   barInput: { flex: 1, paddingVertical: 12 },
   icon: { width: 32, height: 32, backgroundColor: '#B0B0B0', borderRadius: 6 },
   list: { flex: 1, paddingHorizontal: 10 },
-  card: { flexDirection: 'row', alignItems: 'center', gap: 12, padding: 10, backgroundColor: '#B0B0B0', borderRadius: 10 },
+  card: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    padding: 10,
+    backgroundColor: '#B0B0B0',
+    borderRadius: 10,
+  },
+  price: { fontSize: 20, fontWeight: 'bold' },
+  unavailable: { opacity: 0.4 },
   image: { width: 60, height: 60, backgroundColor: '#D3D3D3' },
   title: { fontWeight: 'bold', fontSize: 16 },
   price: { fontSize: 20, fontWeight: 'bold' },
