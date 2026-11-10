@@ -1,27 +1,30 @@
-import { FlatList, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import BottomBar from '@/components/bottom-bar';
+import Header from '@/components/header';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { useEffect, useState } from 'react';
+import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../types';
+import { RootStackParamList, Car } from '../types';
+import carsData from '../src/data/cars.json';
 
-const cars = Array.from({ length: 10 }, (_, i) => ({ id: String(i) }));
+const cars: Car[] = carsData;
 
-export default function SearchResultsScreen() {
-  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+export default function SearchResultsScreen({ route, navigation }: Props) {
+  const { location, startDate, endDate } = route.params;
+  const [cars, setCars] = useState<Car[]>([]);
+
+  useEffect(() => {
+    getAvailableCars(startDate, endDate).then(setCars);
+  }, [startDate, endDate]);
 
   return (
     <SafeAreaView style={styles.screen}>
-      <View style={styles.logo} />
-
+      <Header/>
+      <View style={{flex: 7}}>
       <View style={styles.bar}>
-        <TextInput style={styles.barInput} placeholder="[Search details]" />
-        <View style={styles.icon} />
-      </View>
-
-      <View style={styles.bar}>
-        <TextInput style={styles.barInput} placeholder="[Filter details]" />
-        <View style={styles.icon} />
-        <View style={styles.icon} />
+        <Text style={{}}>{location || 'Any location'} · {startDate} → {endDate}</Text>
       </View>
 
       <FlatList
@@ -29,32 +32,34 @@ export default function SearchResultsScreen() {
         data={cars}
         keyExtractor={(item) => item.id}
         contentContainerStyle={{ gap: 10 }}
-        renderItem={() => (
-          <View style={styles.card}>
+        ListEmptyComponent={<Text>No cars found</Text>}
+        renderItem={({item}) => (
+          <View style={[styles.card, !item.isAvailable && styles.unavailable]}>
             <View style={styles.image} />
-            <View>
-              <Text style={styles.title}>Car title</Text>
-              <Text>Short car details</Text>
-              <Text>$$$</Text>
+            <View style={{ flex: 1 }}>
+              <Text style={styles.title}>{item.make} {item.model}</Text>
+              <Text>{item.year} · {item.color}</Text>
+              {!item.isAvailable && <Text>Unavailable</Text>}
             </View>
+            <Text style={styles.price}>{item.pricePerDay} kr</Text>
           </View>
         )}
       />
-
-      <View style={styles.bottomBar}>
-        <Pressable style={styles.icon} onPress={() => navigation.goBack()} />
-        <Pressable style={styles.mapButton}>
-          <Text>Map View</Text>
-        </Pressable>
-        <View style={styles.icon} />
       </View>
+      <BottomBar backButton={true} mapButton={true} profileButton={true}/>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: 'white' },
-  logo: { width: 50, height: 50, backgroundColor: '#D3D3D3', margin: 10 },
+  screen: { 
+    flex: 1, 
+    backgroundColor: 'white' },
+  logo: { 
+    width: 50, 
+    height: 50, 
+    backgroundColor: '#D3D3D3', 
+    margin: 10 },
   bar: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -70,24 +75,15 @@ const styles = StyleSheet.create({
   list: { flex: 1, paddingHorizontal: 10 },
   card: {
     flexDirection: 'row',
+    alignItems: 'center',
     gap: 12,
     padding: 10,
     backgroundColor: '#B0B0B0',
     borderRadius: 10,
   },
+  price: { fontSize: 20, fontWeight: 'bold' },
+  unavailable: { opacity: 0.4 },
   image: { width: 60, height: 60, backgroundColor: '#D3D3D3' },
   title: { fontWeight: 'bold', fontSize: 16 },
-  bottomBar: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 12,
-    backgroundColor: '#F0F0F0',
-  },
-  mapButton: {
-    backgroundColor: '#B0B0B0',
-    paddingVertical: 14,
-    paddingHorizontal: 40,
-    borderRadius: 999,
-  },
+  price: { fontSize: 20, fontWeight: 'bold' },
 });
