@@ -8,8 +8,11 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList, Car } from '../types';
 import carsData from '../src/data/cars.json';
+import { getAvailableCars } from '../src/services/bookingService';
 
 const cars: Car[] = carsData;
+
+type Props = NativeStackScreenProps<RootStackParamList, 'SearchResults'>;
 
 export default function SearchResultsScreen({ route, navigation }: Props) {
   const { location, startDate, endDate } = route.params;
@@ -30,7 +33,7 @@ export default function SearchResultsScreen({ route, navigation }: Props) {
       <FlatList
         style={styles.list}
         data={cars}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => String(item.id)}
         contentContainerStyle={{ gap: 10 }}
         ListEmptyComponent={<Text>No cars found</Text>}
         renderItem={({item}) => (
@@ -85,5 +88,4 @@ const styles = StyleSheet.create({
   unavailable: { opacity: 0.4 },
   image: { width: 60, height: 60, backgroundColor: '#D3D3D3' },
   title: { fontWeight: 'bold', fontSize: 16 },
-  price: { fontSize: 20, fontWeight: 'bold' },
 });
