@@ -1,79 +1,111 @@
-import { useNavigation } from '@react-navigation/native';
+import { Ionicons } from '@expo/vector-icons';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { RootStackParamList } from '../../types';
 
-
-type BottomBarProps = {
-  backButton: boolean; // set to true if menu needs a go back button
-  mapButton: boolean;
-  profileButton: boolean;
+type Props = {
+  activeTab?: 'map' | 'profile';
 };
 
-type BackButtonProps = {
-};
-
-function BackButton(){
-    const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-    return(
-      <View style={{left: 0, position: 'absolute'}}>
-        <Pressable
-          onPress={() => navigation.goBack()}>
-          <Image source={require('@/assets/images/arrow-left-square.png')} />
-        </Pressable>
-      </View>
-    );
-}
-
-function MapButton(){
-    const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-    return(
-      <View>
-        <Pressable style={styles.mapButton}>
-          <Text>Map View</Text>
-          <Image style={{marginLeft: 15}} source={require('@/assets/images/map-icon.png')} />
-        </Pressable>
-      </View>
-    );
-}
-
-function ProfileButton(){
+export default function BottomBar({ activeTab }: Props) {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-    return(
-      <View style={{ right:0, position: 'absolute'}}>
-        <Pressable onPress={() => navigation.navigate('Profile')}>
-          <Image style={{width: 60, height: 60, }} source={require('@/assets/images/profile-icon.png')} />
-        </Pressable>
-      </View>
-    );
-}
+  const route = useRoute();
+  const mapIsActive = activeTab === 'map' || route.name === 'Map';
+  const profileIsActive = activeTab === 'profile' || route.name === 'Profile';
 
-export default function BottomBar({backButton, profileButton, mapButton}: BottomBarProps) {
-  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const goBack = () => {
+    if (navigation.canGoBack()) {
+      navigation.goBack();
+      return;
+    }
+    navigation.navigate('Start');
+  };
+
   return (
-    <View style={styles.bottomBar}>
-      {backButton && <BackButton/>} {/*only renders if backbutton is true*/}
-      {mapButton && <MapButton/>}
-      {profileButton && <ProfileButton/>}
-    </View>
+    <SafeAreaView edges={['bottom']} style={styles.safeArea}>
+      <View style={styles.bar}>
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel="Go back"
+          onPress={goBack}
+          style={styles.sideButton}
+        >
+          <Ionicons name="arrow-back" size={21} color="#17221F" />
+        </Pressable>
+
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel="Map view"
+          accessibilityState={{ selected: mapIsActive }}
+          onPress={() => navigation.navigate('Map')}
+          style={[styles.mapButton, mapIsActive && styles.activeMapButton]}
+        >
+          <Ionicons
+            name="map-outline"
+            size={20}
+            color={mapIsActive ? '#203F36' : '#17221F'}
+          />
+          <Text style={[styles.mapLabel, mapIsActive && styles.activeLabel]}>Map view</Text>
+        </Pressable>
+
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel="Profile"
+          accessibilityState={{ selected: profileIsActive }}
+          onPress={() => navigation.navigate('Profile')}
+          style={styles.sideButton}
+        >
+          <Ionicons
+            name="person-circle-outline"
+            size={25}
+            color={profileIsActive ? '#203F36' : '#17221F'}
+          />
+        </Pressable>
+      </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-    bottomBar: {
-      flex: 1,
-      flexDirection: 'row',
-      alignItems: 'center',
-      backgroundColor: 'lightgrey',
-      justifyContent: 'center'
-    },
-    mapButton:{
-      flexDirection: 'row', 
-      alignItems: 'center', 
-      backgroundColor: 'grey' , 
-      padding: 5, 
-      paddingRight: 20,
-      paddingLeft: 20,
-      borderRadius: 20
-    }
+  safeArea: {
+    backgroundColor: '#FFFFFF',
+    borderTopColor: '#E2E5DF',
+    borderTopWidth: StyleSheet.hairlineWidth,
+  },
+  bar: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    height: 57,
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+  },
+  sideButton: {
+    alignItems: 'center',
+    height: 44,
+    justifyContent: 'center',
+    width: 48,
+  },
+  mapButton: {
+    alignItems: 'center',
+    borderRadius: 22,
+    flexDirection: 'row',
+    gap: 8,
+    height: 42,
+    justifyContent: 'center',
+    minWidth: 134,
+    paddingHorizontal: 16,
+  },
+  activeMapButton: {
+    backgroundColor: '#EAF3EC',
+  },
+  mapLabel: {
+    color: '#25332F',
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  activeLabel: {
+    color: '#203F36',
+  },
 });

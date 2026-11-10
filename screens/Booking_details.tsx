@@ -22,7 +22,7 @@ export default function BookingDetailsScreen({ route }: Props) {
   };
 
   return (
-    <SafeAreaView style={styles.container} edges={['bottom']}>
+    <SafeAreaView style={styles.container} edges={['top']}>
         <View style={styles.content}>
             <Text style={styles.title}>Booking details</Text>
             <Text>Car: {carId}</Text>
@@ -38,7 +38,7 @@ export default function BookingDetailsScreen({ route }: Props) {
                 <Text style={styles.buttonText}>Clear bookings</Text>
             </Pressable>
         </View>
-      <BottomBar backButton={true} mapButton={true} profileButton={true}/>
+      <BottomBar />
     </SafeAreaView>
   );
 }

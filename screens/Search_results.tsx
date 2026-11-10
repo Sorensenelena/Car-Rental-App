@@ -2,14 +2,12 @@ import BottomBar from '@/components/bottom-bar';
 import Header from '@/components/header';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useEffect, useState } from 'react';
-import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
+import { FlatList, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList, Car } from '../types';
-import carsData from '../src/data/cars.json';
+import { getAvailableCars } from '../src/services/bookingService';
 
-const cars: Car[] = carsData;
+type Props = NativeStackScreenProps<RootStackParamList, 'SearchResults'>;
 
 export default function SearchResultsScreen({ route, navigation }: Props) {
   const { location, startDate, endDate } = route.params;
@@ -20,17 +18,17 @@ export default function SearchResultsScreen({ route, navigation }: Props) {
   }, [startDate, endDate]);
 
   return (
-    <SafeAreaView style={styles.screen}>
+    <SafeAreaView style={styles.screen} edges={['top']}>
       <Header/>
       <View style={{flex: 7}}>
       <View style={styles.bar}>
-        <Text style={{}}>{location || 'Any location'} · {startDate} → {endDate}</Text>
+        <Text>{location || 'Any location'} · {startDate} → {endDate}</Text>
       </View>
 
       <FlatList
         style={styles.list}
         data={cars}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item.id.toString()}
         contentContainerStyle={{ gap: 10 }}
         ListEmptyComponent={<Text>No cars found</Text>}
         renderItem={({item}) => (
@@ -46,7 +44,7 @@ export default function SearchResultsScreen({ route, navigation }: Props) {
         )}
       />
       </View>
-      <BottomBar backButton={true} mapButton={true} profileButton={true}/>
+      <BottomBar />
     </SafeAreaView>
   );
 }
@@ -81,7 +79,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#B0B0B0',
     borderRadius: 10,
   },
-  price: { fontSize: 20, fontWeight: 'bold' },
   unavailable: { opacity: 0.4 },
   image: { width: 60, height: 60, backgroundColor: '#D3D3D3' },
   title: { fontWeight: 'bold', fontSize: 16 },

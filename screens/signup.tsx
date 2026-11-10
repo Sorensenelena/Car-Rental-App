@@ -1,245 +1,172 @@
-import { Picker } from '@react-native-picker/picker';
-import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
-import FormField from '@/components/formfield';
-import PrimaryButton from '@/components/primaryButton';
-import { common } from '@/styles/common';
+import { Pressable, ScrollView, StatusBar, StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import AuthScreenHeader from '@/components/auth-screen-header';
+import AuthTextField from '@/components/auth-text-field';
+import BrandMark from '@/components/brand-mark';
+import WelcomeActionButton from '@/components/welcome-action-button';
 import { RootStackParamList } from '../types';
 
-const MONTHS = [
-  'January',
-  'February',
-  'March',
-  'April',
-  'May',
-  'June',
-  'July',
-  'August',
-  'September',
-  'October',
-  'November',
-  'December',
-];
+type Props = NativeStackScreenProps<RootStackParamList, 'Signup'>;
 
-export default function SignUpScreen() {
-  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [ConfirmPassword, setConfirmPassword] = useState('');
+export default function SignUpScreen({ navigation }: Props) {
+  const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [birthMonth, setBirthMonth] = useState('');
-  const [birthDay, setBirthDay] = useState('');
-  const [birthYear, setBirthYear] = useState('');
-
-  const passwordsMismatch = ConfirmPassword.length > 0 && password !== ConfirmPassword;
-  const dayHasLetters = birthDay.length > 0 && !/^\d+$/.test(birthDay);
-  const yearHasLetters = birthYear.length > 0 && !/^\d+$/.test(birthYear);
-  const dateHasLetters = dayHasLetters || yearHasLetters;
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [feedback, setFeedback] = useState('');
 
   const handleSignup = () => {
-    if (password !== ConfirmPassword || dateHasLetters) {
+    if (password !== confirmPassword) {
+      setFeedback('Passwords do not match.');
       return;
     }
 
-    console.log('firstName:', firstName);
-    console.log('lastName:', lastName);
-    console.log('birthMonth:', birthMonth);
-    console.log('birthDay:', birthDay);
-    console.log('birthYear:', birthYear);
-    console.log('username:', username);
-    console.log('email:', email);
-    console.log('password:', password);
-    console.log('ConfirmPassword:', ConfirmPassword);
+    setFeedback('Sign up is a visual prototype and is not connected yet.');
   };
 
   return (
-    <ScrollView
-      contentContainerStyle={styles.scrollContent}
-      keyboardShouldPersistTaps="handled"
-    >
-      <View style={styles.container}>
-        <View style={common.form}>
-          <View style={styles.row}>
-            <View style={styles.nameFieldContainer}>
-              <Text style={styles.label}>First Name</Text>
-              <TextInput
-                style={styles.smallInput}
-                value={firstName}
-                onChangeText={setFirstName}
-              />
-            </View>
+    <SafeAreaView style={styles.screen} edges={['top', 'bottom']}>
+      <StatusBar barStyle="dark-content" />
+      <AuthScreenHeader
+        title="Sign up"
+        onBack={() => navigation.goBack()}
+      />
+      <ScrollView
+        contentContainerStyle={styles.content}
+        keyboardShouldPersistTaps="handled"
+      >
+        <BrandMark style={styles.brand} />
+        <Text style={styles.title}>Join the good way.</Text>
+        <Text style={styles.subtitle}>A little less car ownership. A lot more possibility.</Text>
 
-            <View style={styles.nameFieldContainer}>
-              <Text style={styles.label}>Last Name</Text>
-              <TextInput
-                style={styles.smallInput}
-                value={lastName}
-                onChangeText={setLastName}
-              />
-            </View>
-          </View>
-
-          <View style={styles.row}>
-            <View style={styles.monthField}>
-              <Text style={styles.label}>Month</Text>
-              <View style={styles.pickerWrapper}>
-                <Picker
-                  selectedValue={birthMonth}
-                  onValueChange={(itemValue) => setBirthMonth(itemValue)}
-                  style={styles.monthPicker}
-                >
-                  <Picker.Item label="Select month" value="" />
-                  {MONTHS.map((month) => (
-                    <Picker.Item key={month} label={month} value={month} />
-                  ))}
-                </Picker>
-              </View>
-            </View>
-
-            <View style={styles.dayField}>
-              <FormField
-                label="Day"
-                value={birthDay}
-                onChangeText={setBirthDay}
-                keyboardType="numeric"
-                small
-              />
-            </View>
-
-            <View style={styles.yearField}>
-              <FormField
-                label="Year"
-                value={birthYear}
-                onChangeText={setBirthYear}
-                keyboardType="numeric"
-                small
-              />
-            </View>
-          </View>
-
-          {dateHasLetters && (
-            <Text style={common.errorText}>Day and year must be numbers only</Text>
-          )}
-
-          <FormField
-            label="Username"
-            value={username}
-            onChangeText={setUsername}
-            autoCapitalize="none"
+        <View style={styles.form}>
+          <AuthTextField
+            label="Full name"
+            value={fullName}
+            onChangeText={setFullName}
+            autoCapitalize="words"
+            autoComplete="name"
           />
-
-          <FormField
-            label="Email"
+          <AuthTextField
+            label="Email address"
             value={email}
             onChangeText={setEmail}
-            autoCapitalize="none"
+            keyboardType="email-address"
+            autoComplete="email"
           />
-
-          <FormField
+          <AuthTextField
             label="Password"
             value={password}
             onChangeText={setPassword}
-            secureTextEntry
-            autoCapitalize="none"
+            password
+            autoComplete="new-password"
+            helperText="At least 8 characters, including a number."
           />
-
-          <FormField
+          <AuthTextField
             label="Confirm password"
-            value={ConfirmPassword}
-            onChangeText={setConfirmPassword}
-            secureTextEntry
-            error={passwordsMismatch ? 'Passwords do not match' : undefined}
-            autoCapitalize="none"
+            value={confirmPassword}
+            onChangeText={(text) => {
+              setConfirmPassword(text);
+              setFeedback('');
+            }}
+            password
+            autoComplete="new-password"
+            error={confirmPassword.length > 0 && password !== confirmPassword
+              ? 'Passwords do not match'
+              : undefined}
           />
 
-          <PrimaryButton
+          <Text style={styles.terms}>
+            By signing up, you agree to our <Text style={styles.underlined}>Terms of service</Text>
+            {' '}and <Text style={styles.underlined}>Privacy policy</Text>.
+          </Text>
+
+          {!!feedback && <Text style={styles.feedback}>{feedback}</Text>}
+          <WelcomeActionButton
             title="Sign up"
+            variant="primary"
             onPress={handleSignup}
-            style={styles.signupButton}
+            style={styles.submitButton}
           />
         </View>
-      </View>
 
-      <View style={styles.loginRow}>
-        <Text style={styles.loginText}>already have an account?</Text>
-        <Pressable onPress={() => navigation.navigate('Login')}>
-          <Text>Login</Text>
-        </Pressable>
-      </View>
-    </ScrollView>
+        <View style={styles.footer}>
+          <Text style={styles.footerText}>Already part of løv?</Text>
+          <Pressable accessibilityRole="button" onPress={() => navigation.navigate('Login')}>
+            <Text style={styles.footerLink}>Sign in</Text>
+          </Pressable>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
-const inputBase = {
-  color: 'white',
-  backgroundColor: 'grey',
-  borderRadius: 10,
-  padding: 5,
-} as const;
-
 const styles = StyleSheet.create({
-  container: {
-    alignItems: 'center',
-    paddingTop: 20,
+  screen: {
+    backgroundColor: '#F8F7F1',
+    flex: 1,
   },
-  row: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 10,
+  content: {
+    flexGrow: 1,
+    paddingHorizontal: 30,
+    paddingBottom: 18,
   },
-  nameFieldContainer: {
-    width: '48%',
+  brand: {
+    marginHorizontal: -26,
+    marginTop: 32,
   },
-  monthField: {
-    width: '46%',
+  title: {
+    color: '#203F36',
+    fontSize: 29,
+    fontWeight: '400',
+    letterSpacing: -0.5,
+    marginTop: 26,
   },
-  dayField: {
-    width: '22%',
+  subtitle: {
+    color: '#7C8883',
+    fontSize: 14,
+    marginTop: 7,
   },
-  yearField: {
-    width: '26%',
+  form: {
+    flexGrow: 1,
+    marginTop: 23,
   },
-  label: {
-    marginBottom: 5,
+  terms: {
+    color: '#818B86',
+    fontSize: 11,
+    lineHeight: 17,
+    marginTop: -1,
+    marginBottom: 18,
   },
-  smallInput: {
-    ...inputBase,
+  underlined: {
+    color: '#304A40',
+    textDecorationLine: 'underline',
+  },
+  feedback: {
+    color: '#A7372D',
+    fontSize: 12,
+    marginBottom: 8,
+  },
+  submitButton: {
+    marginTop: 'auto',
     width: '100%',
-    height: 35,
   },
-  pickerWrapper: {
-    backgroundColor: 'grey',
-    borderRadius: 10,
-    overflow: 'hidden',
-    height: 35,
+  footer: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: 4,
     justifyContent: 'center',
+    marginTop: 'auto',
+    paddingTop: 34,
   },
-  monthPicker: {
-    width: '100%',
-    color: 'white',
-    backgroundColor: 'transparent',
-  },
-  loginRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    alignSelf: 'center',
-    gap: 5,
-    marginTop: 20,
-  },
-  loginText: {
+  footerText: {
+    color: '#7C8883',
     fontSize: 14,
   },
-  scrollContent: {
-    flexGrow: 1,
-    paddingBottom: 40,
-  },
-  signupButton: {
-    width: '60%',
-    alignSelf: 'center',
+  footerLink: {
+    color: '#203F36',
+    fontSize: 14,
   },
 });

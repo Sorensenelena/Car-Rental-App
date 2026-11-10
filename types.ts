@@ -2,6 +2,7 @@ export type RootStackParamList = {
   Home: undefined;
   Signup: undefined;
   Profile: undefined;
+  Map: undefined;
   SearchResults: { location: string; startDate: string; endDate: string };
   Booking_details: { carId: number; startDate: string; endDate: string };
   Start: undefined;
