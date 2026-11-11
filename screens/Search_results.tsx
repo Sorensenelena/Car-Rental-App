@@ -5,7 +5,10 @@ import { useEffect, useState } from 'react';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { RootStackParamList, Car } from '../types';
+import carsData from '../src/data/cars.json';
 import { getAvailableCars } from '../src/services/bookingService';
+
+type Props = NativeStackScreenProps<RootStackParamList, 'SearchResults'>;
 
 type Props = NativeStackScreenProps<RootStackParamList, 'SearchResults'>;
 
@@ -28,7 +31,7 @@ export default function SearchResultsScreen({ route, navigation }: Props) {
       <FlatList
         style={styles.list}
         data={cars}
-        keyExtractor={(item) => item.id.toString()}
+        keyExtractor={(item) => String(item.id)}
         contentContainerStyle={{ gap: 10 }}
         ListEmptyComponent={<Text>No cars found</Text>}
         renderItem={({item}) => (
@@ -82,5 +85,4 @@ const styles = StyleSheet.create({
   unavailable: { opacity: 0.4 },
   image: { width: 60, height: 60, backgroundColor: '#D3D3D3' },
   title: { fontWeight: 'bold', fontSize: 16 },
-  price: { fontSize: 20, fontWeight: 'bold' },
 });
