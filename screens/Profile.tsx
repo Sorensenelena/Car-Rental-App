@@ -4,13 +4,14 @@ import ProfileButton from '@/components/Profile-button';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Image, StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { RootStackParamList } from '../types';
 
 export default function ProfileScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['top']}>
       <Header/>
       <View style={styles.main}>
         <View style={styles.profileLogoAndInfo}>
@@ -26,8 +27,8 @@ export default function ProfileScreen() {
           <ProfileButton name='Previous rentals' link=''/>
         </View>
       </View>
-      <BottomBar backButton={true} profileButton={false} mapButton={true}/>
-    </View>
+      <BottomBar activeTab="profile" />
+    </SafeAreaView>
   );
 }
 
