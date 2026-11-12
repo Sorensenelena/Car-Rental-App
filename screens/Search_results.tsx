@@ -4,11 +4,8 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useEffect, useState } from 'react';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { RootStackParamList, Car } from '../types';
-import carsData from '../src/data/cars.json';
 import { getAvailableCars } from '../src/services/bookingService';
-
-type Props = NativeStackScreenProps<RootStackParamList, 'SearchResults'>;
+import { Car, RootStackParamList } from '../types';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'SearchResults'>;
 
@@ -82,6 +79,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#B0B0B0',
     borderRadius: 10,
   },
+  price: { fontSize: 20, fontWeight: 'bold' },
   unavailable: { opacity: 0.4 },
   image: { width: 60, height: 60, backgroundColor: '#D3D3D3' },
   title: { fontWeight: 'bold', fontSize: 16 },

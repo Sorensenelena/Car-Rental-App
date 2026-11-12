@@ -1,13 +1,16 @@
-import { Ionicons } from '@expo/vector-icons';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { useState } from 'react';
-import { StatusBar, StyleSheet, Text, Pressable, View, ScrollView } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import AuthScreenHeader from '@/components/auth-screen-header';
 import AuthTextField from '@/components/auth-text-field';
 import BrandMark from '@/components/brand-mark';
 import WelcomeActionButton from '@/components/welcome-action-button';
+import { Ionicons } from '@expo/vector-icons';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { useState } from 'react';
+import { Pressable, ScrollView, StatusBar, StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { RootStackParamList } from '../types';
+
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../firebaseConfig';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Login'>;
 
@@ -19,8 +22,24 @@ const DUMMY_ACCOUNT = {
 
 export default function LoginScreen({ navigation }: Props) {
   const [identifier, setIdentifier] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loginError, setLoginError] = useState('');
+
+  const signIn = async () => {
+    try{
+      const user = await signInWithEmailAndPassword(auth, email, password)
+      if (user) {
+        setLoginError('');
+        navigation.navigate('Home')
+      }
+    } catch(error: any) {
+      console.log(error)
+      alert('sign in failed ' + error.message);
+      setLoginError('Incorrect email or password');
+    }
+    
+  }
 
   const handleLogin = () => {
     const value = identifier.trim().toLowerCase();
@@ -54,9 +73,9 @@ export default function LoginScreen({ navigation }: Props) {
         <View style={styles.form}>
           <AuthTextField
             label="Email address"
-            value={identifier}
+            value={email}
             onChangeText={(text) => {
-              setIdentifier(text);
+              setEmail(text);
               setLoginError('');
             }}
             keyboardType="email-address"
@@ -85,7 +104,7 @@ export default function LoginScreen({ navigation }: Props) {
           <WelcomeActionButton
             title="Log in"
             variant="primary"
-            onPress={handleLogin}
+            onPress={signIn}
             style={styles.submitButton}
           />
         </View>
