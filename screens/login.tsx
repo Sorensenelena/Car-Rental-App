@@ -14,14 +14,7 @@ import { auth } from '../firebaseConfig';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Login'>;
 
-const DUMMY_ACCOUNT = {
-  username: 'admin',
-  email: 'admin@example.com',
-  password: '1234',
-};
-
 export default function LoginScreen({ navigation }: Props) {
-  const [identifier, setIdentifier] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loginError, setLoginError] = useState('');
@@ -40,20 +33,6 @@ export default function LoginScreen({ navigation }: Props) {
     }
     
   }
-
-  const handleLogin = () => {
-    const value = identifier.trim().toLowerCase();
-    const identifierMatches =
-      value === DUMMY_ACCOUNT.username || value === DUMMY_ACCOUNT.email;
-    const passwordMatches = password === DUMMY_ACCOUNT.password;
-
-    if (identifierMatches && passwordMatches) {
-      setLoginError('');
-      navigation.navigate('Home');
-    } else {
-      setLoginError('Incorrect email or password');
-    }
-  };
 
   return (
     <SafeAreaView style={styles.screen} edges={['top', 'bottom']}>
