@@ -8,6 +8,9 @@ import BrandMark from '@/components/brand-mark';
 import WelcomeActionButton from '@/components/welcome-action-button';
 import { RootStackParamList } from '../types';
 
+import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { auth } from '../firebaseConfig';
+
 type Props = NativeStackScreenProps<RootStackParamList, 'Signup'>;
 
 export default function SignUpScreen({ navigation }: Props) {
@@ -16,6 +19,21 @@ export default function SignUpScreen({ navigation }: Props) {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [feedback, setFeedback] = useState('');
+
+  const Signup = async () => {
+    try{
+      const { user } = await createUserWithEmailAndPassword(auth, email, password);
+      await updateProfile(user, {displayName: fullName}).catch((error: any)=>
+        console.log(error)  
+      );
+      navigation.navigate('Home')
+    } catch(error: any){
+      console.log(error)
+      alert('signup failed ' + error.message);
+      setFeedback('signup failed ' + error.message);
+    }
+
+  }
 
   const handleSignup = () => {
     if (password !== confirmPassword) {
@@ -87,7 +105,7 @@ export default function SignUpScreen({ navigation }: Props) {
           <WelcomeActionButton
             title="Sign up"
             variant="primary"
-            onPress={handleSignup}
+            onPress={Signup}
             style={styles.submitButton}
           />
         </View>
