@@ -1,3 +1,5 @@
+import BottomBar from '@/components/bottom-bar';
+import BrandMark from '@/components/brand-mark';
 import { Ionicons } from '@expo/vector-icons';
 import DateTimePicker, { DateTimePickerChangeEvent } from '@react-native-community/datetimepicker';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -14,9 +16,9 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import BottomBar from '@/components/bottom-bar';
-import BrandMark from '@/components/brand-mark';
 import { RootStackParamList } from '../types';
+
+import { auth } from '../firebaseConfig';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
 type DateTarget = 'start' | 'end';
@@ -105,6 +107,9 @@ export default function HomeScreen({ navigation }: Props) {
   const [error, setError] = useState('');
   const [pickerTarget, setPickerTarget] = useState<DateTarget | null>(null);
   const locationInput = useRef<TextInput>(null);
+  const name = auth.currentUser?.displayName || 'Guest';
+
+
 
   const updateStartDate = (value: string) => {
     setStartDate(value);
@@ -162,7 +167,7 @@ export default function HomeScreen({ navigation }: Props) {
         contentContainerStyle={styles.content}
         keyboardShouldPersistTaps="handled"
       >
-        <Text style={styles.eyebrow}>HEJ EMMA, WHERE TO?</Text>
+        <Text style={styles.eyebrow}>HELLO {name}, WHERE TO?</Text>
         <Text style={styles.title}>A car nearby.{'\n'}A day your way.</Text>
 
         <View style={styles.bookingCard}>
