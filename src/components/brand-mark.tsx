@@ -9,7 +9,7 @@ export default function BrandMark({ style }: Props) {
   return (
     <View style={[styles.container, style]}>
       <Ionicons name="flash-outline" size={25} color="#203F36" />
-      <Text style={styles.name}>løv</Text>
+      <Text style={styles.name}>GreenRide</Text>
     </View>
   );
 }
@@ -23,8 +23,8 @@ const styles = StyleSheet.create({
   },
   name: {
     color: '#203F36',
-    fontSize: 27,
+    fontSize: 24,
     fontWeight: '500',
-    letterSpacing: -1,
+    letterSpacing: -0.5,
   },
 });

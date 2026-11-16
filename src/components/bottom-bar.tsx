@@ -9,6 +9,27 @@ type Props = {
   activeTab?: 'map' | 'profile';
 };
 
+function getMapParams(params: unknown): RootStackParamList['Map'] {
+  if (
+    typeof params !== 'object' ||
+    params === null ||
+    !('startDate' in params) ||
+    typeof params.startDate !== 'string' ||
+    !('endDate' in params) ||
+    typeof params.endDate !== 'string'
+  ) {
+    return undefined;
+  }
+
+  return {
+    startDate: params.startDate,
+    endDate: params.endDate,
+    location: 'location' in params && typeof params.location === 'string'
+      ? params.location
+      : undefined,
+  };
+}
+
 export default function BottomBar({ activeTab }: Props) {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const route = useRoute();
@@ -21,6 +42,10 @@ export default function BottomBar({ activeTab }: Props) {
       return;
     }
     navigation.navigate('Start');
+  };
+
+  const openMap = () => {
+    navigation.navigate('Map', getMapParams(route.params));
   };
 
   return (
@@ -39,7 +64,7 @@ export default function BottomBar({ activeTab }: Props) {
           accessibilityRole="button"
           accessibilityLabel="Map view"
           accessibilityState={{ selected: mapIsActive }}
-          onPress={() => navigation.navigate('Map')}
+          onPress={openMap}
           style={[styles.mapButton, mapIsActive && styles.activeMapButton]}
         >
           <Ionicons

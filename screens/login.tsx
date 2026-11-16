@@ -7,15 +7,10 @@ import AuthScreenHeader from '@/components/auth-screen-header';
 import AuthTextField from '@/components/auth-text-field';
 import BrandMark from '@/components/brand-mark';
 import WelcomeActionButton from '@/components/welcome-action-button';
+import { MOCK_ACCOUNT } from '../src/data/mock-account';
 import { RootStackParamList } from '../types';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Login'>;
-
-const DUMMY_ACCOUNT = {
-  username: 'admin',
-  email: 'admin@example.com',
-  password: '1234',
-};
 
 export default function LoginScreen({ navigation }: Props) {
   const [identifier, setIdentifier] = useState('');
@@ -25,8 +20,8 @@ export default function LoginScreen({ navigation }: Props) {
   const handleLogin = () => {
     const value = identifier.trim().toLowerCase();
     const identifierMatches =
-      value === DUMMY_ACCOUNT.username || value === DUMMY_ACCOUNT.email;
-    const passwordMatches = password === DUMMY_ACCOUNT.password;
+      value === MOCK_ACCOUNT.username || value === MOCK_ACCOUNT.email;
+    const passwordMatches = password === MOCK_ACCOUNT.password;
 
     if (identifierMatches && passwordMatches) {
       setLoginError('');
@@ -103,7 +98,7 @@ export default function LoginScreen({ navigation }: Props) {
         </View>
 
         <View style={styles.footer}>
-          <Text style={styles.footerText}>New to løv?</Text>
+          <Text style={styles.footerText}>New to GreenRide?</Text>
           <Pressable accessibilityRole="button" onPress={() => navigation.navigate('Signup')}>
             <Text style={styles.footerLink}>Sign up</Text>
           </Pressable>

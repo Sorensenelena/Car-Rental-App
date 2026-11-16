@@ -93,7 +93,7 @@ export default function SignUpScreen({ navigation }: Props) {
         </View>
 
         <View style={styles.footer}>
-          <Text style={styles.footerText}>Already part of løv?</Text>
+          <Text style={styles.footerText}>Already part of GreenRide?</Text>
           <Pressable accessibilityRole="button" onPress={() => navigation.navigate('Login')}>
             <Text style={styles.footerLink}>Sign in</Text>
           </Pressable>

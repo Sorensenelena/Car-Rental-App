@@ -4,8 +4,12 @@ import { registerRootComponent } from 'expo';
 
 import HomeScreen from '../../screens/Home';
 import ProfileScreen from '../../screens/Profile';
+import ProfileSectionScreen from '../../screens/Profile_section';
 import SearchResultsScreen from '../../screens/Search_results';
 import BookingDetailsScreen from '../../screens/Booking_details';
+import BookingSummaryScreen from '../../screens/Booking_summary';
+import BookingPaymentScreen from '../../screens/Booking_payment';
+import BookingConfirmedScreen from '../../screens/Booking_confirmed';
 import SignupScreen from '../../screens/signup';
 import StartScreen from '../../screens/Start';
 import LoginScreen from '../../screens/login';
@@ -44,12 +48,31 @@ function App() {
         <Stack.Screen 
             name="Booking_details" 
             component={BookingDetailsScreen}
-            initialParams={{carId: 1, startDate: '2026-10-01', endDate: '2026-10-04'}}
             options={{ headerShown: false }}
           />
         <Stack.Screen
+          name="BookingSummary"
+          component={BookingSummaryScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="BookingPayment"
+          component={BookingPaymentScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="BookingConfirmed"
+          component={BookingConfirmedScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
           name="Profile"
           component={ProfileScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="ProfileSection"
+          component={ProfileSectionScreen}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

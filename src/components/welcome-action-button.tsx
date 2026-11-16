@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
   },
   link: {
     backgroundColor: 'transparent',
-    marginTop: 48,
+    marginTop: 12,
   },
   label: {
     color: '#203F36',

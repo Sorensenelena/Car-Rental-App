@@ -1,86 +1,236 @@
-import BottomBar from '@/components/bottom-bar';
-import Header from '@/components/header';
+import { Ionicons } from '@expo/vector-icons';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useEffect, useState } from 'react';
-import { FlatList, StyleSheet, Text, View } from 'react-native';
+import {
+  ActivityIndicator,
+  FlatList,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { RootStackParamList, Car } from '../types';
+import BottomBar from '@/components/bottom-bar';
+import ElectricCarResultCard from '@/components/electric-car-result-card';
 import { getAvailableCars } from '../src/services/bookingService';
+import { Car, RootStackParamList } from '../types';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'SearchResults'>;
+
+function formatDate(value: string) {
+  const [year, month, day] = value.split('-').map(Number);
+  if (!year || !month || !day) return value;
+  return new Date(year, month - 1, day).toLocaleDateString('en-GB', {
+    day: 'numeric',
+    month: 'short',
+  });
+}
+
+function getRentalDays(startDate: string, endDate: string) {
+  const start = new Date(`${startDate}T00:00:00`);
+  const end = new Date(`${endDate}T00:00:00`);
+  const duration = Math.ceil((end.getTime() - start.getTime()) / 86400000);
+  return Number.isFinite(duration) && duration > 0 ? duration : 1;
+}
 
 export default function SearchResultsScreen({ route, navigation }: Props) {
   const { location, startDate, endDate } = route.params;
   const [cars, setCars] = useState<Car[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
+  const rentalDays = getRentalDays(startDate, endDate);
 
   useEffect(() => {
-    getAvailableCars(startDate, endDate).then(setCars);
+    let active = true;
+    setLoading(true);
+    setLoadError(false);
+
+    getAvailableCars(startDate, endDate)
+      .then((availableCars) => {
+        if (active) setCars(availableCars);
+      })
+      .catch(() => {
+        if (active) {
+          setLoadError(true);
+          console.error('Unable to load available cars.');
+        }
+      })
+      .finally(() => {
+        if (active) setLoading(false);
+      });
+
+    return () => {
+      active = false;
+    };
   }, [startDate, endDate]);
+
+  const dateRange = `${formatDate(startDate)}–${formatDate(endDate)} · ${rentalDays} ${
+    rentalDays === 1 ? 'day' : 'days'
+  }`;
 
   return (
     <SafeAreaView style={styles.screen} edges={['top']}>
-      <Header/>
-      <View style={{flex: 7}}>
-      <View style={styles.bar}>
-        <Text>{location || 'Any location'} · {startDate} → {endDate}</Text>
+      <View style={styles.heading}>
+        <Text style={styles.headingTitle}>Find your electric</Text>
       </View>
 
       <FlatList
-        style={styles.list}
         data={cars}
         keyExtractor={(item) => item.id.toString()}
-        contentContainerStyle={{ gap: 10 }}
-        ListEmptyComponent={<Text>No cars found</Text>}
-        renderItem={({item}) => (
-          <View style={[styles.card, !item.isAvailable && styles.unavailable]}>
-            <View style={styles.image} />
-            <View style={{ flex: 1 }}>
-              <Text style={styles.title}>{item.make} {item.model}</Text>
-              <Text>{item.year} · {item.color}</Text>
-              {!item.isAvailable && <Text>Unavailable</Text>}
+        contentContainerStyle={styles.listContent}
+        ListHeaderComponent={
+          <View>
+            <View style={styles.searchSummary}>
+              <Ionicons name="search" size={20} color="#17221F" />
+              <View style={styles.searchCopy}>
+                <Text style={styles.location} numberOfLines={1}>
+                  {location.trim() || 'Any location'}
+                </Text>
+                <Text style={styles.dateRange}>{dateRange}</Text>
+              </View>
+              <Ionicons name="options-outline" size={20} color="#17221F" />
             </View>
-            <Text style={styles.price}>{item.pricePerDay} kr</Text>
+
+            <View style={styles.filters}>
+              <View style={styles.filterChip}>
+                <Ionicons name="options-outline" size={14} color="#263A32" />
+                <Text style={styles.filterText}>Filters</Text>
+              </View>
+              <View style={styles.filterChip}>
+                <Text style={styles.filterText}>Price</Text>
+              </View>
+              <View style={styles.filterChip}>
+                <Text style={styles.filterText}>Range</Text>
+              </View>
+              <Ionicons name="swap-vertical" size={20} color="#263A32" />
+            </View>
+
+            <View style={styles.resultsHeading}>
+              <Text style={styles.resultCount}>
+                {cars.length} electric {cars.length === 1 ? 'car' : 'cars'} nearby
+              </Text>
+              <Text style={styles.recommended}>Recommended</Text>
+            </View>
           </View>
+        }
+        ListEmptyComponent={
+          <View style={styles.emptyState}>
+            {loading ? (
+              <ActivityIndicator color="#315E4A" />
+            ) : (
+              <Text style={styles.emptyText}>
+                {loadError
+                  ? 'We couldn’t load cars. Please try again.'
+                  : 'No cars available for these dates.'}
+              </Text>
+            )}
+          </View>
+        }
+        renderItem={({ item }) => (
+          <ElectricCarResultCard
+            car={item}
+            rentalDays={rentalDays}
+            onPress={() =>
+              navigation.navigate('Booking_details', {
+                carId: item.id,
+                location,
+                startDate,
+                endDate,
+              })
+            }
+          />
         )}
       />
-      </View>
+
       <BottomBar />
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  screen: { 
-    flex: 1, 
-    backgroundColor: 'white' },
-  logo: { 
-    width: 50, 
-    height: 50, 
-    backgroundColor: '#D3D3D3', 
-    margin: 10 },
-  bar: {
-    flexDirection: 'row',
+  screen: {
+    backgroundColor: '#F8F7F1',
+    flex: 1,
+  },
+  heading: {
     alignItems: 'center',
+    height: 62,
+    justifyContent: 'center',
+  },
+  headingTitle: {
+    color: '#203F36',
+    fontSize: 17,
+    fontWeight: '600',
+  },
+  listContent: {
+    flexGrow: 1,
+    paddingBottom: 14,
+    paddingHorizontal: 20,
+  },
+  searchSummary: {
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
+    borderColor: '#DFE4DD',
+    borderRadius: 16,
+    borderWidth: 1,
+    flexDirection: 'row',
+    gap: 13,
+    marginBottom: 13,
+    paddingHorizontal: 14,
+    paddingVertical: 13,
+  },
+  searchCopy: {
+    flex: 1,
+  },
+  location: {
+    color: '#263A32',
+    fontSize: 14,
+  },
+  dateRange: {
+    color: '#7D8983',
+    fontSize: 11,
+    marginTop: 4,
+  },
+  filters: {
+    alignItems: 'center',
+    flexDirection: 'row',
     gap: 8,
-    backgroundColor: '#D3D3D3',
-    borderRadius: 10,
-    marginHorizontal: 10,
-    marginBottom: 8,
-    paddingHorizontal: 10,
+    marginBottom: 12,
   },
-  barInput: { flex: 1, paddingVertical: 12 },
-  icon: { width: 32, height: 32, backgroundColor: '#B0B0B0', borderRadius: 6 },
-  list: { flex: 1, paddingHorizontal: 10 },
-  card: {
-    flexDirection: 'row',
+  filterChip: {
     alignItems: 'center',
-    gap: 12,
-    padding: 10,
-    backgroundColor: '#B0B0B0',
-    borderRadius: 10,
+    backgroundColor: '#EDF1E9',
+    borderRadius: 20,
+    flexDirection: 'row',
+    gap: 5,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
   },
-  unavailable: { opacity: 0.4 },
-  image: { width: 60, height: 60, backgroundColor: '#D3D3D3' },
-  title: { fontWeight: 'bold', fontSize: 16 },
-  price: { fontSize: 20, fontWeight: 'bold' },
+  filterText: {
+    color: '#263A32',
+    fontSize: 12,
+  },
+  resultsHeading: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 12,
+  },
+  resultCount: {
+    color: '#263A32',
+    fontSize: 16,
+  },
+  recommended: {
+    color: '#7D8983',
+    fontSize: 10,
+  },
+  emptyState: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: 120,
+  },
+  emptyText: {
+    color: '#7D8983',
+    fontSize: 14,
+    textAlign: 'center',
+  },
 });

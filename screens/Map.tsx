@@ -1,6 +1,8 @@
 import { Ionicons } from '@expo/vector-icons';
-import { useState } from 'react';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { useEffect, useState } from 'react';
 import {
+  ActivityIndicator,
   Image,
   Pressable,
   StyleSheet,
@@ -9,18 +11,97 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import BottomBar from '@/components/bottom-bar';
+import { getAvailableCars } from '../src/services/bookingService';
+import { Car, RootStackParamList } from '../types';
 
-const nearbyCars: { id: number; price: number; left: `${number}%`; top: `${number}%` }[] = [
-  { id: 1, price: 400, left: '12%', top: '24%' },
-  { id: 2, price: 450, left: '34%', top: '43%' },
-  { id: 3, price: 550, left: '72%', top: '34%' },
-  { id: 4, price: 425, left: '12%', top: '61%' },
-  { id: 5, price: 500, left: '64%', top: '73%' },
+type Props = NativeStackScreenProps<RootStackParamList, 'Map'>;
+
+const markerPositions: { left: `${number}%`; top: `${number}%` }[] = [
+  { left: '12%', top: '24%' },
+  { left: '34%', top: '43%' },
+  { left: '72%', top: '34%' },
+  { left: '12%', top: '61%' },
+  { left: '64%', top: '73%' },
+  { left: '78%', top: '57%' },
+  { left: '43%', top: '19%' },
+  { left: '48%', top: '82%' },
 ];
 
-export default function MapScreen() {
+function toDateValue(date: Date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+function getDefaultDates() {
+  const start = new Date();
+  const end = new Date(start);
+  end.setDate(start.getDate() + 2);
+  return { startDate: toDateValue(start), endDate: toDateValue(end) };
+}
+
+function formatShortDate(value: string) {
+  const [year, month, day] = value.split('-').map(Number);
+  if (!year || !month || !day) return value;
+  return new Date(year, month - 1, day).toLocaleDateString('en-GB', {
+    day: 'numeric',
+    month: 'short',
+  });
+}
+
+function getRentalDays(startDate: string, endDate: string) {
+  const start = new Date(`${startDate}T00:00:00`);
+  const end = new Date(`${endDate}T00:00:00`);
+  const duration = Math.ceil((end.getTime() - start.getTime()) / 86400000);
+  return Number.isFinite(duration) && duration > 0 ? duration : 1;
+}
+
+export default function MapScreen({ route, navigation }: Props) {
+  const [defaultDates] = useState(getDefaultDates);
+  const startDate = route.params?.startDate ?? defaultDates.startDate;
+  const endDate = route.params?.endDate ?? defaultDates.endDate;
+  const location = route.params?.location?.trim() || 'Nørrebro, Copenhagen';
+  const rentalDays = getRentalDays(startDate, endDate);
+  const [cars, setCars] = useState<Car[]>([]);
   const [selectedCarId, setSelectedCarId] = useState<number | null>(null);
-  const selectedCar = nearbyCars.find((car) => car.id === selectedCarId);
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
+  const selectedCar = cars.find((car) => car.id === selectedCarId);
+
+  useEffect(() => {
+    let active = true;
+    setLoading(true);
+    setLoadError(false);
+    setSelectedCarId(null);
+
+    getAvailableCars(startDate, endDate)
+      .then((availableCars) => {
+        if (active) setCars(availableCars);
+      })
+      .catch((error: unknown) => {
+        if (active) {
+          setLoadError(true);
+          console.error('Unable to load available map cars.', error);
+        }
+      })
+      .finally(() => {
+        if (active) setLoading(false);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [startDate, endDate]);
+
+  const openCarDetails = (car: Car) => {
+    navigation.navigate('Booking_details', {
+      carId: car.id,
+      location,
+      startDate,
+      endDate,
+    });
+  };
 
   return (
     <SafeAreaView style={styles.screen} edges={['top']}>
@@ -31,8 +112,11 @@ export default function MapScreen() {
       <View style={styles.searchSummary}>
         <Ionicons name="search" size={20} color="#17221F" />
         <View style={styles.searchCopy}>
-          <Text style={styles.searchLocation}>Nørrebro, Copenhagen</Text>
-          <Text style={styles.searchDates}>Find available cars nearby</Text>
+          <Text style={styles.searchLocation} numberOfLines={1}>{location}</Text>
+          <Text style={styles.searchDates}>
+            {formatShortDate(startDate)}–{formatShortDate(endDate)} · {rentalDays}{' '}
+            {rentalDays === 1 ? 'day' : 'days'}
+          </Text>
         </View>
         <Ionicons name="options-outline" size={21} color="#17221F" />
       </View>
@@ -60,53 +144,76 @@ export default function MapScreen() {
           <View style={styles.currentLocationDot} />
         </View>
 
-        {nearbyCars.map((car) => {
+        {cars.map((car, index) => {
           const isSelected = car.id === selectedCarId;
+          const position = markerPositions[index % markerPositions.length];
 
           return (
             <Pressable
               key={car.id}
               accessibilityRole="button"
-              accessibilityLabel={`${car.price} DKK per day, nearby car`}
+              accessibilityLabel={`${car.pricePerDay} DKK per day, ${car.make} ${car.model}`}
               accessibilityState={{ selected: isSelected }}
               onPress={() => setSelectedCarId(isSelected ? null : car.id)}
               style={[
                 styles.carMarker,
-                { left: car.left, top: car.top },
+                position,
                 isSelected && styles.selectedCarMarker,
               ]}
             >
-              <Text
-                style={[
-                  styles.markerLabel,
-                  isSelected && styles.selectedMarkerLabel,
-                ]}
-              >
-                {car.price} DKK
+              <Text style={[styles.markerLabel, isSelected && styles.selectedMarkerLabel]}>
+                {car.pricePerDay} DKK
               </Text>
             </Pressable>
           );
         })}
 
+        {loading && (
+          <View style={styles.messageCard}>
+            <ActivityIndicator color="#315E4A" />
+            <Text style={styles.messageText}>Finding available cars…</Text>
+          </View>
+        )}
+        {!loading && loadError && (
+          <View style={styles.messageCard}>
+            <Text style={styles.messageText}>Cars couldn’t be loaded. Please try again.</Text>
+          </View>
+        )}
+        {!loading && !loadError && cars.length === 0 && (
+          <View style={styles.messageCard}>
+            <Text style={styles.messageText}>No cars available for these dates.</Text>
+          </View>
+        )}
+
         {selectedCar && (
-          <View style={styles.previewCard}>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={`View ${selectedCar.make} ${selectedCar.model} details`}
+            onPress={() => openCarDetails(selectedCar)}
+            style={({ pressed }) => [styles.previewCard, pressed && styles.previewPressed]}
+          >
             <Image
               source={require('../assets/images/placeholder.png')}
               style={styles.carImage}
               resizeMode="cover"
             />
             <View style={styles.previewContent}>
-              <View style={styles.previewTopRow}>
-                <Text style={styles.carName}>Volkswagen ID.3</Text>
-                <Text style={styles.carPrice}>{selectedCar.price} DKK / day</Text>
-              </View>
-              <Text style={styles.carMeta}>★ 4.9 · 350 m away</Text>
-              <Text style={styles.carSpecs}>ϟ 420 km · Automatic</Text>
-              <Text style={styles.totalPrice}>
-                {selectedCar.price * 2} DKK total · 2 days
+              <Text style={styles.carName} numberOfLines={1}>
+                {selectedCar.make} {selectedCar.model}
               </Text>
+              <Text style={styles.carMeta}>
+                {selectedCar.year} · {selectedCar.color} · Available
+              </Text>
+              <View style={styles.previewBottomRow}>
+                <Text style={styles.totalPrice}>
+                  {selectedCar.pricePerDay * rentalDays} DKK total · {rentalDays}{' '}
+                  {rentalDays === 1 ? 'day' : 'days'}
+                </Text>
+                <Text style={styles.carPrice}>{selectedCar.pricePerDay} DKK / day</Text>
+              </View>
+              <Text style={styles.viewDetails}>View car details →</Text>
             </View>
-          </View>
+          </Pressable>
         )}
       </View>
 
@@ -317,6 +424,26 @@ const styles = StyleSheet.create({
   selectedMarkerLabel: {
     color: '#FFFFFF',
   },
+  messageCard: {
+    alignItems: 'center',
+    alignSelf: 'center',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 14,
+    flexDirection: 'row',
+    gap: 10,
+    left: 18,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    position: 'absolute',
+    right: 18,
+    top: '44%',
+  },
+  messageText: {
+    color: '#34433D',
+    flex: 1,
+    fontSize: 12,
+    textAlign: 'center',
+  },
   previewCard: {
     alignItems: 'center',
     backgroundColor: '#FFFFFF',
@@ -329,8 +456,11 @@ const styles = StyleSheet.create({
     right: 15,
     boxShadow: '0px 3px 10px rgba(0, 0, 0, 0.12)',
   },
+  previewPressed: {
+    opacity: 0.84,
+  },
   carImage: {
-    backgroundColor: '#D9DFE0',
+    backgroundColor: '#DDE2E2',
     borderRadius: 12,
     height: 88,
     width: 116,
@@ -338,33 +468,39 @@ const styles = StyleSheet.create({
   previewContent: {
     flex: 1,
     marginLeft: 12,
-  },
-  previewTopRow: {
-    gap: 3,
+    minWidth: 0,
   },
   carName: {
     color: '#263A32',
     fontSize: 15,
     fontWeight: '700',
   },
-  carPrice: {
-    color: '#203F36',
-    fontSize: 13,
-    marginTop: 5,
-  },
   carMeta: {
     color: '#7D8983',
-    fontSize: 11,
+    fontSize: 10,
     marginTop: 5,
   },
-  carSpecs: {
-    color: '#34433D',
-    fontSize: 11,
-    marginTop: 4,
+  previewBottomRow: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: 5,
+    justifyContent: 'space-between',
+    marginTop: 7,
+  },
+  carPrice: {
+    color: '#263A32',
+    fontSize: 12,
+    fontWeight: '700',
   },
   totalPrice: {
     color: '#7D8983',
+    flex: 1,
+    fontSize: 10,
+  },
+  viewDetails: {
+    color: '#315E4A',
     fontSize: 11,
+    fontWeight: '600',
     marginTop: 6,
   },
 });

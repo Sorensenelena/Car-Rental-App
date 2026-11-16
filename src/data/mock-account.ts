@@ -1,0 +1,27 @@
+export const MOCK_ACCOUNT = {
+  username: 'admin',
+  email: 'admin@example.com',
+  password: '1234',
+  fullName: 'Emma Nielsen',
+  initials: 'EN',
+  city: 'Copenhagen',
+  joined: 'May 2026',
+  phone: '+45 20 12 34 56',
+  address: 'Rantzausgade 14, 2200 København N',
+  driverLicense: 'DK · 12345678',
+  licenseExpiry: 'Valid until 14 Aug 2030',
+  cardBrand: 'Visa',
+  cardLastFour: '4242',
+  notifications: 'Trip updates and account notices',
+  privacy: 'Profile visible to verified hosts only',
+  upcomingTrip: {
+    car: 'Volkswagen ID.3',
+    dates: '14–16 Aug 2026',
+    location: 'Nørrebro, Copenhagen',
+  },
+  pastTrip: {
+    car: 'Tesla Model S',
+    dates: '20–22 Jun 2026',
+    location: 'Copenhagen, Denmark',
+  },
+} as const;
